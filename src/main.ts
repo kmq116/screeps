@@ -1,4 +1,12 @@
+import { roleHarvester } from "role/harvester";
+import { roleUpgrader } from "role/upgrader";
+import { ROLE } from "role/utils";
+import { MAIN_ROOM, SPAWN1 } from "sources/sources";
 import { ErrorMapper } from "utils/ErrorMapper";
+import { repaired } from "./role/repaired";
+import { creepConfig } from "./role/roleConfig";
+import { spawnCreep } from "./spawn/spawn";
+import { roleBuilder } from "./role/builder";
 
 declare global {
   /*
@@ -9,6 +17,7 @@ declare global {
     Types added in this `global` block are in an ambient, global context. This is needed because `main.ts` is a module file (uses import or export).
     Interfaces matching on name from @types/screeps will be merged. This is how you can extend the 'built-in' interfaces from @types/screeps.
   */
+
   // Memory extension samples
   interface Memory {
     uuid: number;
@@ -32,12 +41,25 @@ declare global {
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  console.log(`Current game tick is ${Game.time}`);
-
+  spawnCreep();
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
+    }
+    const creep = Game.creeps[name];
+    if (creep.memory.role === ROLE.harvester) {
+      roleHarvester.run(creep);
+    }
+    if (creep.memory.role === ROLE.upgrader) {
+      roleUpgrader.run(creep);
+    }
+
+    if (creep.memory.role === ROLE.repairer) {
+      repaired.run(creep);
+    }
+    if (creep.memory.role === ROLE.builder) {
+      roleBuilder.run(creep);
     }
   }
 });
