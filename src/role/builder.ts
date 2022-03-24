@@ -1,5 +1,5 @@
 import { SOURCES, SPAWN1 } from "../sources/sources";
-import { shouldGetEnergy } from "./utils";
+import { isEnergyFull, shouldGetEnergy } from "./utils";
 
 export const roleBuilder = {
   /** @param {Creep} creep **/
@@ -11,10 +11,7 @@ export const roleBuilder = {
       if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
       }
-      // 能量满了就去升级
-      if (creep.store.getFreeCapacity() === 0) {
-        creep.memory.working = true;
-      }
+      if (isEnergyFull(creep)) creep.memory.working = true;
     } else {
       if (creep.memory.working === true) {
         const targets = creep.room.find(FIND_CONSTRUCTION_SITES);

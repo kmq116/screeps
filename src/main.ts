@@ -1,6 +1,6 @@
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
-import { ROLE } from "role/utils";
+import { ROLE, generatePixel } from "role/utils";
 import { MAIN_ROOM, SPAWN1 } from "sources/sources";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { repaired } from "./role/repaired";
@@ -28,6 +28,7 @@ declare global {
     role: string;
     room: string;
     working: boolean;
+    sourceId?: string; // 目标源id
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -41,12 +42,16 @@ declare global {
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  generatePixel();
   spawnCreep();
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
     }
+  }
+
+  for (const name in Game.creeps) {
     const creep = Game.creeps[name];
     if (creep.memory.role === ROLE.harvester) {
       roleHarvester.run(creep);

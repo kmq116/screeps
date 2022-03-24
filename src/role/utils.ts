@@ -31,3 +31,14 @@ export function isEnergyFull(creep: Creep): boolean {
 export function shouldGetEnergy(creep: Creep): boolean {
   return creep.store.getFreeCapacity() >= 0 && creep.memory.working === false;
 }
+
+/**
+ * 生成 pixel
+ *
+ * @param cpuLimit 当 bucket 中的 cpu 到多少时才生成 pixel
+ */
+export function generatePixel(cpuLimit = 7000): void {
+  if (Game.cpu.bucket >= cpuLimit) Game.cpu.generatePixel();
+}
+
+// export function creepFindStructures() {}

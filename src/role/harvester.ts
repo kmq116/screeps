@@ -1,4 +1,3 @@
-import { roleBuilder } from "./builder";
 import { SOURCES } from "../sources/sources";
 import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 import { repaired } from "./repaired";
@@ -7,26 +6,65 @@ export const roleHarvester = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {
     if (shouldGetEnergy(creep)) {
-      if (creep.harvest(SOURCES[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(SOURCES[0]);
+      const source = (creep.memory.sourceId ? Game.getObjectById(creep.memory.sourceId) : SOURCES[0]) as Source;
+      // creep.say("🔄 harvest");
+      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(source);
+      }
+      // 在能量附近 检查有没有 container 工地
+      if (creep.pos.inRangeTo(source, 1)) {
+        console.log("在范围内");
+        const targets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 10, {
+          filter: structure => {
+            return structure.structureType === STRUCTURE_CONTAINER;
+          }
+        });
+        const container = creep.pos.findInRange(FIND_STRUCTURES, 10, {
+          filter: s => s.structureType === STRUCTURE_CONTAINER
+        });
+        console.log(container.length);
+
+        if (!targets.length && !container.length) {
+          console.log("no container");
+          creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
+        }
       }
       // 能量满了就去升级
       if (isEnergyFull(creep)) creep.memory.working = true;
     } else if (creep.memory.working === true) {
-      const targets = creep.room.find(FIND_STRUCTURES, {
+      if (isEnergyEmpty(creep)) creep.memory.working = false;
+      // 优先建造建筑工地 修建 container
+      const siteTargets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 5, {
         filter: structure => {
-          return (
-            (structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_SPAWN) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-          );
+          return structure.structureType === STRUCTURE_CONTAINER;
         }
       });
-      if (targets.length > 0) {
-        if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
+      if (siteTargets.length) {
+        // creep.say("🚧 build");
+        if (creep.build(siteTargets[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(siteTargets[0]);
+          return;
+        }
+      } else {
+        // 优先补满 spawn 和 extensions
+        const spawnOrExtension = creep.room.find(FIND_STRUCTURES, {
+          filter: structure => {
+            return (
+              (structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_SPAWN) &&
+              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            );
+          }
+        });
+        const container = creep.room.find(FIND_STRUCTURES, {
+          filter: s => s.structureType === STRUCTURE_CONTAINER
+        });
+        const targets = spawnOrExtension.length ? spawnOrExtension : container;
+        if (targets.length > 0) {
+          if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
+          }
         }
       }
-      if (isEnergyEmpty(creep)) creep.memory.working = false;
     } else {
       repaired.run(creep);
     }
