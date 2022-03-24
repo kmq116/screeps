@@ -13,7 +13,6 @@ export const roleHarvester = {
       }
       // 在能量附近 检查有没有 container 工地
       if (creep.pos.inRangeTo(source, 1)) {
-        console.log("在范围内");
         const targets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 10, {
           filter: structure => {
             return structure.structureType === STRUCTURE_CONTAINER;
@@ -22,10 +21,8 @@ export const roleHarvester = {
         const container = creep.pos.findInRange(FIND_STRUCTURES, 10, {
           filter: s => s.structureType === STRUCTURE_CONTAINER
         });
-        console.log(container.length);
 
         if (!targets.length && !container.length) {
-          console.log("no container");
           creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
         }
       }
@@ -33,17 +30,28 @@ export const roleHarvester = {
       if (isEnergyFull(creep)) creep.memory.working = true;
     } else if (creep.memory.working === true) {
       if (isEnergyEmpty(creep)) creep.memory.working = false;
+
       // 优先建造建筑工地 修建 container
       const siteTargets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 5, {
         filter: structure => {
           return structure.structureType === STRUCTURE_CONTAINER;
         }
       });
+      const container = creep.room.find(FIND_STRUCTURES, {
+        filter: structure => {
+          return structure.structureType === STRUCTURE_CONTAINER;
+        }
+      });
+
       if (siteTargets.length) {
         // creep.say("🚧 build");
         if (creep.build(siteTargets[0]) === ERR_NOT_IN_RANGE) {
           creep.moveTo(siteTargets[0]);
           return;
+        }
+      } else if (container.length) {
+        if (creep.transfer(container[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container[0]);
         }
       } else {
         // 优先补满 spawn 和 extensions
@@ -55,10 +63,10 @@ export const roleHarvester = {
             );
           }
         });
-        const container = creep.room.find(FIND_STRUCTURES, {
+        const containerTargets = creep.room.find(FIND_STRUCTURES, {
           filter: s => s.structureType === STRUCTURE_CONTAINER
         });
-        const targets = spawnOrExtension.length ? spawnOrExtension : container;
+        const targets = spawnOrExtension.length ? spawnOrExtension : containerTargets;
         if (targets.length > 0) {
           if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });

@@ -7,6 +7,7 @@ import { repaired } from "./role/repaired";
 import { creepConfig } from "./role/roleConfig";
 import { spawnCreep } from "./spawn/spawn";
 import { roleBuilder } from "./role/builder";
+import { roleCarrier } from "./role/carrier";
 
 declare global {
   /*
@@ -60,6 +61,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
       roleUpgrader.run(creep);
     }
 
+    if (creep.memory.role === ROLE.carrier) {
+      roleCarrier.run(creep);
+    }
     if (creep.memory.role === ROLE.repairer) {
       repaired.run(creep);
     }

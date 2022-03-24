@@ -5,7 +5,8 @@ export enum ROLE {
   harvester = "harvester",
   upgrader = "upgrader",
   builder = "builder",
-  repairer = "repairer"
+  repairer = "repairer",
+  carrier = "carrier"
 }
 
 /**
