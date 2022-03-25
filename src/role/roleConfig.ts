@@ -2,7 +2,7 @@ import { ROLE } from "./utils";
 
 export const creepConfig = {
   [ROLE.harvester]: {
-    body: [WORK, WORK, WORK, CARRY, MOVE],
+    body: [WORK, WORK, CARRY, MOVE],
     max: 4
   },
   [ROLE.upgrader]: {

@@ -21,7 +21,6 @@ export const roleHarvester = {
         const container = creep.pos.findInRange(FIND_STRUCTURES, 10, {
           filter: s => s.structureType === STRUCTURE_CONTAINER
         });
-
         if (!targets.length && !container.length) {
           creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
         }
@@ -37,10 +36,8 @@ export const roleHarvester = {
           return structure.structureType === STRUCTURE_CONTAINER;
         }
       });
-      const container = creep.room.find(FIND_STRUCTURES, {
-        filter: structure => {
-          return structure.structureType === STRUCTURE_CONTAINER;
-        }
+      const container = creep.pos.findInRange(FIND_STRUCTURES, 10, {
+        filter: s => s.structureType === STRUCTURE_CONTAINER
       });
 
       if (siteTargets.length) {
@@ -50,7 +47,11 @@ export const roleHarvester = {
           return;
         }
       } else if (container.length) {
-        if (creep.transfer(container[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        if (container[0].hits < container[0].hitsMax) {
+          if (creep.repair(container[0]) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(container[0]);
+          }
+        } else if (creep.transfer(container[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
           creep.moveTo(container[0]);
         }
       } else {

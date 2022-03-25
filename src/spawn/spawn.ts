@@ -22,7 +22,15 @@ export function spawnCreep() {
   const builders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.builder);
   const repairers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.repairer);
   const carriers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
-  if (harvesters.length < creepConfig[ROLE.harvester].max) {
+  if (carriers.length < creepConfig[ROLE.carrier].max) {
+    SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
+      memory: {
+        role: ROLE.carrier,
+        room: MAIN_ROOM,
+        working: false
+      }
+    });
+  } else if (harvesters.length < creepConfig[ROLE.harvester].max) {
     const result = SPAWN1.spawnCreep(creepConfig[ROLE.harvester].body, getCreepName(ROLE.harvester), {
       memory: {
         role: ROLE.harvester,
@@ -33,7 +41,7 @@ export function spawnCreep() {
     });
     if (result === ERR_NOT_ENOUGH_ENERGY) {
       console.log("没有足够的能量 尝试孵化最小 harvester");
-      SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
+      const a = SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
         memory: {
           role: ROLE.harvester,
           room: MAIN_ROOM,
@@ -41,15 +49,8 @@ export function spawnCreep() {
           sourceId: SOURCES.length === 1 ? SOURCES[0].id : Math.random() > 0.5 ? SOURCES[0].id : SOURCES[1].id
         }
       });
+      console.log(a);
     }
-  } else if (carriers.length < creepConfig[ROLE.carrier].max) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
-      memory: {
-        role: ROLE.carrier,
-        room: MAIN_ROOM,
-        working: false
-      }
-    });
   } else if (upgraders.length < creepConfig[ROLE.upgrader].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
       memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
