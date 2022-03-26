@@ -1,5 +1,6 @@
 import { SOURCES, SPAWN1 } from "../sources/sources";
-import { isEnergyFull, shouldGetEnergy } from "./utils";
+import { roleUpgrader } from "./upgrader";
+import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 
 export const roleBuilder = {
   /** @param {Creep} creep **/
@@ -13,16 +14,16 @@ export const roleBuilder = {
       }
       if (isEnergyFull(creep)) creep.memory.working = true;
     } else {
+      if (isEnergyEmpty(creep)) creep.memory.working = false;
       if (creep.memory.working === true) {
         const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         if (targets.length) {
           if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
             creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
           }
+        } else {
+          roleUpgrader.run(creep);
         }
-      }
-      if (creep.store[RESOURCE_ENERGY] === 0) {
-        creep.memory.working = false;
       }
     }
   }

@@ -1,16 +1,14 @@
 import { SOURCES } from "sources/sources";
-import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
+import { creepWithdraw, isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 
 export const roleUpgrader = {
   run(creep: Creep): void {
     // 身上携带的能量不足时，就去搬运能量
     if (shouldGetEnergy(creep)) {
       const target = creep.room.find(FIND_STRUCTURES, {
-        filter: structure => structure.structureType === STRUCTURE_CONTAINER
+        filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
       })[0];
-      if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(target);
-      }
+      if (target) creepWithdraw(creep, target, RESOURCE_ENERGY);
       if (isEnergyFull(creep)) creep.memory.working = true;
       //  能量满了 去升级控制器
       if (isEnergyFull(creep)) creep.memory.working = true;

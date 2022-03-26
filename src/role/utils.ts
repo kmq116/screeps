@@ -42,4 +42,8 @@ export function generatePixel(cpuLimit = 7000): void {
   if (Game.cpu.bucket >= cpuLimit) Game.cpu.generatePixel();
 }
 
-// export function creepFindStructures() {}
+export function creepWithdraw(creep: Creep, target: AnyStructure, resource: ResourceConstant): void {
+  if (creep.withdraw(target, resource) === ERR_NOT_IN_RANGE) {
+    creep.moveTo(target);
+  }
+}

@@ -63,5 +63,9 @@ export function spawnCreep() {
     SPAWN1.spawnCreep(creepConfig[ROLE.repairer].body, getCreepName(ROLE.repairer), {
       memory: { role: ROLE.repairer, room: MAIN_ROOM, working: false }
     });
+  } else if (upgraders.length < 10) {
+    SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
+      memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
+    });
   }
 }
