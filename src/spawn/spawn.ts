@@ -17,12 +17,22 @@ function getCreepName(role: ROLE): string {
 }
 
 export function spawnCreep() {
-  const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
-  const upgraders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.upgrader);
-  const builders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.builder);
-  const repairers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.repairer);
-  const carriers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
-  if (carriers.length < creepConfig[ROLE.carrier].max) {
+  const creepsTotalOfTypes = _.reduce(
+    Game.creeps,
+    (acc, cur) => {
+      console.log(cur.memory.role);
+      return { ...acc, [cur.memory.role]: acc[cur.memory.role] + 1 };
+    },
+    {
+      harvester: 0,
+      upgrader: 0,
+      builder: 0,
+      repairer: 0,
+      carrier: 0
+    } as Record<ROLE, number>
+  );
+
+  if (creepsTotalOfTypes.carrier < creepConfig[ROLE.carrier].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
       memory: {
         role: ROLE.carrier,
@@ -30,7 +40,7 @@ export function spawnCreep() {
         working: false
       }
     });
-  } else if (harvesters.length < creepConfig[ROLE.harvester].max) {
+  } else if (creepsTotalOfTypes.harvester < creepConfig[ROLE.harvester].max) {
     const result = SPAWN1.spawnCreep(creepConfig[ROLE.harvester].body, getCreepName(ROLE.harvester), {
       memory: {
         role: ROLE.harvester,
@@ -40,7 +50,6 @@ export function spawnCreep() {
       }
     });
     if (result === ERR_NOT_ENOUGH_ENERGY) {
-      console.log("没有足够的能量 尝试孵化最小 harvester");
       const a = SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
         memory: {
           role: ROLE.harvester,
@@ -51,19 +60,19 @@ export function spawnCreep() {
       });
       console.log(a);
     }
-  } else if (upgraders.length < creepConfig[ROLE.upgrader].max) {
+  } else if (creepsTotalOfTypes.upgrader < creepConfig[ROLE.upgrader].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
       memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
     });
-  } else if (builders.length < creepConfig[ROLE.builder].max) {
+  } else if (creepsTotalOfTypes.builder < creepConfig[ROLE.builder].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.builder].body, getCreepName(ROLE.builder), {
       memory: { role: ROLE.builder, room: MAIN_ROOM, working: false }
     });
-  } else if (repairers.length < creepConfig[ROLE.repairer].max) {
+  } else if (creepsTotalOfTypes.repairer < creepConfig[ROLE.repairer].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.repairer].body, getCreepName(ROLE.repairer), {
       memory: { role: ROLE.repairer, room: MAIN_ROOM, working: false }
     });
-  } else if (upgraders.length < 10) {
+  } else if (creepsTotalOfTypes.upgrader < 10) {
     SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
       memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
     });

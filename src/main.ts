@@ -26,7 +26,7 @@ declare global {
   }
 
   interface CreepMemory {
-    role: string;
+    role: ROLE;
     room: string;
     working: boolean;
     sourceId?: string; // 目标源id
