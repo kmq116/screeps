@@ -1,10 +1,9 @@
-import { SOURCES, SPAWN1 } from "../sources/sources";
-import { roleUpgrader } from "./upgrader";
 import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
+import { roleUpgrader } from "./upgrader";
 
 export const roleBuilder = {
   /** @param {Creep} creep **/
-  run(creep: Creep) {
+  run(creep: Creep): void {
     if (shouldGetEnergy(creep)) {
       const target = creep.room.find(FIND_STRUCTURES, {
         filter: structure => structure.structureType === STRUCTURE_CONTAINER

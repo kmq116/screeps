@@ -1,5 +1,5 @@
-import { ROLE } from "role/utils";
 import { MAIN_ROOM, SOURCES, SPAWN1 } from "sources/sources";
+import { ROLE } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
 
 // function generateCreep(spawn: StructureSpawn, role: ROLE): string | undefined {
@@ -16,13 +16,19 @@ function getCreepName(role: ROLE): string {
   return `${role}-${Game.time}`;
 }
 
-export function spawnCreep() {
+export function spawnCreep(): void {
   const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
   const upgraders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.upgrader);
   const builders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.builder);
   const repairers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.repairer);
   const carriers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
-  if (carriers.length < creepConfig[ROLE.carrier].max) {
+  console.log(harvesters.length, "harvesters");
+  console.log(upgraders.length, "upgraders");
+  console.log(builders.length, "builders");
+  console.log(repairers.length, "repairers");
+  console.log(carriers.length, "carriers");
+
+  if (carriers.length < creepConfig[ROLE.carrier].max && harvesters.length >= 2) {
     SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
       memory: {
         role: ROLE.carrier,

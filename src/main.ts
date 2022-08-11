@@ -1,13 +1,11 @@
-import { roleHarvester } from "role/harvester";
-import { roleUpgrader } from "role/upgrader";
 import { ROLE, generatePixel } from "role/utils";
-import { MAIN_ROOM, SPAWN1 } from "sources/sources";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { repaired } from "./role/repaired";
-import { creepConfig } from "./role/roleConfig";
-import { spawnCreep } from "./spawn/spawn";
 import { roleBuilder } from "./role/builder";
 import { roleCarrier } from "./role/carrier";
+import { roleHarvester } from "role/harvester";
+import { roleUpgrader } from "role/upgrader";
+import { spawnCreep } from "./spawn/spawn";
 
 declare global {
   /*
@@ -56,18 +54,16 @@ export const loop = ErrorMapper.wrapLoop(() => {
     const creep = Game.creeps[name];
     if (creep.memory.role === ROLE.harvester) {
       roleHarvester.run(creep);
-    }
-    if (creep.memory.role === ROLE.upgrader) {
+    } else if (creep.memory.role === ROLE.upgrader) {
       roleUpgrader.run(creep);
-    }
-
-    if (creep.memory.role === ROLE.carrier) {
+    } else if (creep.memory.role === ROLE.carrier) {
       roleCarrier.run(creep);
-    }
-    if (creep.memory.role === ROLE.repairer) {
+    } else if (creep.memory.role === ROLE.repairer) {
       repaired.run(creep);
-    }
-    if (creep.memory.role === ROLE.builder) {
+    } else if (creep.memory.role === ROLE.builder) {
+      roleBuilder.run(creep);
+    } else {
+      console.log(`Creep ${creep.name} has no role assigned.`);
       roleBuilder.run(creep);
     }
   }

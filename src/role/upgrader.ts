@@ -1,4 +1,3 @@
-import { SOURCES } from "sources/sources";
 import { creepWithdraw, isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 
 export const roleUpgrader = {

@@ -1,4 +1,3 @@
-import { SOURCES } from "sources/sources";
 import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 
 export const repaired = {

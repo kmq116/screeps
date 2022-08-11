@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { SourceMapConsumer } from "source-map";
 
 export class ErrorMapper {
