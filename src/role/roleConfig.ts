@@ -19,6 +19,6 @@ export const creepConfig = {
   },
   [ROLE.carrier]: {
     body: [CARRY, CARRY, MOVE],
-    max: 2
+    max: 1
   }
 };
