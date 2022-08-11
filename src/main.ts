@@ -6,6 +6,7 @@ import { roleCarrier } from "./role/carrier";
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "./spawn/spawn";
+import { SOURCES } from "sources/sources";
 
 declare global {
   /*
@@ -37,12 +38,23 @@ declare global {
     }
   }
 }
-
+function averageHarvesterSourceId() {
+  const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
+  const sourceId = SOURCES.length > 1 ? SOURCES[1].id : SOURCES[0].id;
+  harvesters.forEach((creep, index) => {
+    if (index >= harvesters.length / 2) {
+      creep.memory.sourceId = sourceId;
+    } else {
+      creep.memory.sourceId = SOURCES[0].id;
+    }
+  });
+}
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
   generatePixel();
   spawnCreep();
+  averageHarvesterSourceId();
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {

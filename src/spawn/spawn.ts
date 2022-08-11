@@ -22,13 +22,16 @@ export function spawnCreep(): void {
   const builders = _.filter(Game.creeps, creep => creep.memory.role === ROLE.builder);
   const repairers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.repairer);
   const carriers = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
+  const containers = _.filter(Game.structures, s => s.structureType === STRUCTURE_CONTAINER);
+
   console.log(harvesters.length, "harvesters");
   console.log(upgraders.length, "upgraders");
   console.log(builders.length, "builders");
   console.log(repairers.length, "repairers");
   console.log(carriers.length, "carriers");
 
-  if (carriers.length < creepConfig[ROLE.carrier].max && harvesters.length >= 2) {
+  //  只有容器数量大于 2 的时候才制造搬运的 否则不浪费能量去搬运
+  if (carriers.length < creepConfig[ROLE.carrier].max && containers.length >= 2) {
     SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
       memory: {
         role: ROLE.carrier,
@@ -36,26 +39,27 @@ export function spawnCreep(): void {
         working: false
       }
     });
-  } else if (harvesters.length < creepConfig[ROLE.harvester].max) {
+    // 容器数小于 2 的话一直生产采矿的
+  } else if (harvesters.length < creepConfig[ROLE.harvester].max || containers.length <= 2) {
+    const sourceId = SOURCES[0]?.id;
     const result = SPAWN1.spawnCreep(creepConfig[ROLE.harvester].body, getCreepName(ROLE.harvester), {
       memory: {
         role: ROLE.harvester,
         room: MAIN_ROOM,
         working: false,
-        sourceId: SOURCES.length === 1 ? SOURCES[0].id : Math.random() > 0.5 ? SOURCES[0].id : SOURCES[1].id
+        sourceId
       }
     });
     if (result === ERR_NOT_ENOUGH_ENERGY) {
       console.log("没有足够的能量 尝试孵化最小 harvester");
-      const a = SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
+      SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
         memory: {
           role: ROLE.harvester,
           room: MAIN_ROOM,
           working: false,
-          sourceId: SOURCES.length === 1 ? SOURCES[0].id : Math.random() > 0.5 ? SOURCES[0].id : SOURCES[1].id
+          sourceId
         }
       });
-      console.log(a);
     }
   } else if (upgraders.length < creepConfig[ROLE.upgrader].max) {
     SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {

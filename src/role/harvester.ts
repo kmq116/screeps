@@ -8,7 +8,15 @@ export const roleHarvester = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {
     if (shouldGetEnergy(creep)) {
-      const source = (creep.memory.sourceId ? Game.getObjectById(creep.memory.sourceId) : SOURCES[0]) as Source;
+      if (!creep.memory.sourceId) {
+        console.log("没有指定 sourceId");
+        return;
+      }
+      const source = Game.getObjectById<Source>(creep.memory.sourceId);
+      if (!source) {
+        console.log("没有找到指定的 source");
+        return;
+      }
       // creep.say("🔄 harvest");
       if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
         creep.moveTo(source);
