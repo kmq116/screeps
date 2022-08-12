@@ -1,6 +1,8 @@
 /**
  * role enum value
  */
+import { MAIN_ROOM } from "../sources/sources";
+
 export enum ROLE {
   harvester = "harvester",
   upgrader = "upgrader",
@@ -47,3 +49,7 @@ export function creepWithdraw(creep: Creep, target: AnyStructure, resource: Reso
     creep.moveTo(target);
   }
 }
+
+export const getRoleTotalNum = (roomId = MAIN_ROOM) => {
+  return Game.rooms[roomId].memory.creepRoleCounts;
+};

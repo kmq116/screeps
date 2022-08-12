@@ -1,4 +1,4 @@
-import { ROLE, generatePixel } from "role/utils";
+import { ROLE, generatePixel, getRoleTotalNum } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { repaired } from "./role/repaired";
 import { roleBuilder } from "./role/builder";
@@ -6,7 +6,9 @@ import { roleCarrier } from "./role/carrier";
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "./spawn/spawn";
-import { SOURCES } from "sources/sources";
+import { MAIN_ROOM, SOURCES } from "sources/sources";
+import { logKeys, logValues } from "./utils/debug_utils";
+import { watchClient } from "../plugins/watch-client.js";
 
 declare global {
   /*
@@ -22,6 +24,7 @@ declare global {
   interface Memory {
     uuid: number;
     log: any;
+    watch: Partial<Record<"expressions" | "values", any>>;
   }
 
   interface CreepMemory {
@@ -31,6 +34,10 @@ declare global {
     sourceId?: string; // 目标源id
   }
 
+  interface RoomMemory {
+    creepRoleCounts: Record<ROLE, number>;
+  }
+
   // Syntax for adding proprties to `global` (ex "global.log")
   namespace NodeJS {
     interface Global {
@@ -38,6 +45,7 @@ declare global {
     }
   }
 }
+
 function averageHarvesterSourceId() {
   const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
   const sourceId = SOURCES.length > 1 ? SOURCES[1].id : SOURCES[0].id;
@@ -49,9 +57,13 @@ function averageHarvesterSourceId() {
     }
   });
 }
+
+const myRoom = Game.rooms[MAIN_ROOM];
+
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  watchClient();
   generatePixel();
   spawnCreep();
   averageHarvesterSourceId();
@@ -61,9 +73,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
       delete Memory.creeps[name];
     }
   }
-
+  // 初始化房间的内存属性为 0
+  for (const roleKey in ROLE) {
+    myRoom.memory.creepRoleCounts[roleKey as ROLE] = 0;
+  }
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
+    myRoom.memory.creepRoleCounts[creep.memory.role] = (myRoom.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
+
     if (creep.memory.role === ROLE.harvester) {
       roleHarvester.run(creep);
     } else if (creep.memory.role === ROLE.upgrader) {
@@ -75,8 +92,15 @@ export const loop = ErrorMapper.wrapLoop(() => {
     } else if (creep.memory.role === ROLE.builder) {
       roleBuilder.run(creep);
     } else {
-      console.log(`Creep ${creep.name} has no role assigned.`);
-      roleBuilder.run(creep);
+      const [role] = creep.name.split("-");
+      console.log(`Creep ${creep.name} 没有对应的角色配置，当前类型是 ${creep.memory.role as string}`);
+      if (role) {
+        creep.memory.role = role as ROLE;
+      } else {
+        roleBuilder.run(creep);
+      }
     }
   }
+  logKeys(getRoleTotalNum());
+  logValues(getRoleTotalNum());
 });

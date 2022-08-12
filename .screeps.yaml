@@ -1,0 +1,26 @@
+servers:
+  main:
+    host: screeps.com
+    secure: true
+    token: '3491e99b-eb13-4034-99a6-2197913e1f84'
+  ptr:
+    host: screeps.com
+    secure: true
+    path: '/ptr'
+    token: '00000000-0a0a-0a00-000a-a0000a0000a0'
+  season:
+    host: screeps.com
+    secure: true
+    path: '/season'
+    token: '00000000-0a0a-0a00-000a-a0000a0000a0'
+  private:
+    host: 127.0.0.1
+    port: 21025
+    secure: false
+    username: bob
+    password: password123
+configs:
+  multimeter:
+    plugins: ["./plugins/watch-client.ts"]
+    aliases: {}
+    logFilename: 'multimeter.log'
