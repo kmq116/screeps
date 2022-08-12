@@ -8,7 +8,6 @@ import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "./spawn/spawn";
 import { MAIN_ROOM, SOURCES } from "sources/sources";
 import { logKeys, logValues } from "./utils/debug_utils";
-import { watchClient } from "../plugins/watch-client.js";
 
 declare global {
   /*
@@ -63,7 +62,6 @@ const myRoom = Game.rooms[MAIN_ROOM];
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  watchClient();
   generatePixel();
   spawnCreep();
   averageHarvesterSourceId();
