@@ -50,6 +50,6 @@ export function creepWithdraw(creep: Creep, target: AnyStructure, resource: Reso
   }
 }
 
-export const getRoleTotalNum = (roomId = MAIN_ROOM) => {
+export const getRoleTotalNum = (roomId = MAIN_ROOM): Record<ROLE, number> => {
   return Game.rooms[roomId].memory.creepRoleCounts;
 };

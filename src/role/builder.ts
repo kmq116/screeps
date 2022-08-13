@@ -4,14 +4,14 @@ import { roleUpgrader } from "./upgrader";
 export const roleBuilder = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {
-    if (shouldGetEnergy(creep)) {
+    if (creep.shouldGetEnergy()) {
       const target = creep.room.find(FIND_STRUCTURES, {
         filter: structure => structure.structureType === STRUCTURE_CONTAINER
       })[0];
       if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
       }
-      if (isEnergyFull(creep)) creep.memory.working = true;
+      if (creep.isEnergyFull()) creep.memory.working = true;
     } else {
       if (isEnergyEmpty(creep)) creep.memory.working = false;
       if (creep.memory.working === true) {

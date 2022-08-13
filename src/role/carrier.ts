@@ -3,7 +3,7 @@ import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 export const roleCarrier = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {
-    if (shouldGetEnergy(creep)) {
+    if (creep.shouldGetEnergy()) {
       const targets = creep.room.find(FIND_STRUCTURES, {
         filter: structure => {
           return structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0;
@@ -16,7 +16,7 @@ export const roleCarrier = {
         }
       }
       // 能量满了就去升级
-      if (isEnergyFull(creep)) creep.memory.working = true;
+      if (creep.isEnergyFull()) creep.memory.working = true;
     } else if (creep.memory.working === true) {
       creep.say("📦");
       if (isEnergyEmpty(creep)) creep.memory.working = false;

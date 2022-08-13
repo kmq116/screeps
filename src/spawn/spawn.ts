@@ -2,73 +2,124 @@ import { MAIN_ROOM, SOURCES, SPAWN1 } from "sources/sources";
 import { ROLE, getRoleTotalNum } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
 
-// function generateCreep(spawn: StructureSpawn, role: ROLE): string | undefined {
-//   const body = creepConfig[role].body;
-//   const name = `${role}-${Game.time}`;
-//   const result = spawn.spawnCreep(body, name, { memory: { role,room:MAIN_ROOM,working } });
-//   if (result === OK) {
-//     return name;
-//   }
-//   return undefined;
-// }
 function getCreepName(role: ROLE): string {
   return `${role}-${Game.time}`;
+}
+
+function _spawn(
+  spawn: StructureSpawn,
+  options: {
+    body: BodyPartConstant[];
+    name: string;
+    opt: {
+      memory: {
+        role: ROLE;
+        room: string;
+        working: boolean;
+        sourceId?: string;
+      };
+    };
+  }
+) {
+  const spawnResult = spawn.spawnCreep(options.body, options.name, options.opt);
+
+  //  如果一个孵化能量不够，并且没有这个类型的 creep 最小化孵化一个
+  if (spawnResult === ERR_NOT_ENOUGH_ENERGY && getRoleTotalNum()[options.opt.memory.role] < 1) {
+    return spawn.spawnCreep([WORK, CARRY, MOVE], options.name, {
+      memory: {
+        role: options.opt.memory.role,
+        room: options.opt.memory.room,
+        working: false,
+        sourceId: options.opt.memory.sourceId
+      }
+    });
+  }
+
+  return spawnResult;
 }
 
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
   const containers = Game.rooms[MAIN_ROOM].find(FIND_STRUCTURES, {
-    filter: i => i.structureType === STRUCTURE_CONTAINER
-    // && i.store[RESOURCE_ENERGY] > 0
+    filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
 
   //  只有容器数量大于 2 的时候才制造搬运的 否则不浪费能量去搬运
-  if (carrier < creepConfig[ROLE.carrier].max && containers.length >= 2) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.carrier].body, getCreepName(ROLE.carrier), {
-      memory: {
-        role: ROLE.carrier,
-        room: MAIN_ROOM,
-        working: false
+  if (carrier < creepConfig[ROLE.carrier].max && containers.length >= 1) {
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.carrier].body,
+      name: getCreepName(ROLE.carrier),
+      opt: {
+        memory: {
+          role: ROLE.carrier,
+          room: MAIN_ROOM,
+          working: false
+        }
       }
     });
 
     // 容器数小于 2 的话一直生产采矿的
   } else if (harvester < creepConfig[ROLE.harvester].max || containers.length < 2) {
     const sourceId = SOURCES[0]?.id;
-    const result = SPAWN1.spawnCreep(creepConfig[ROLE.harvester].body, getCreepName(ROLE.harvester), {
-      memory: {
-        role: ROLE.harvester,
-        room: MAIN_ROOM,
-        working: false,
-        sourceId
-      }
-    });
-
-    if (result === ERR_NOT_ENOUGH_ENERGY) {
-      SPAWN1.spawnCreep([WORK, CARRY, MOVE], getCreepName(ROLE.harvester), {
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.harvester].body,
+      name: getCreepName(ROLE.harvester),
+      opt: {
         memory: {
           role: ROLE.harvester,
           room: MAIN_ROOM,
           working: false,
           sourceId
         }
-      });
-    }
+      }
+    });
   } else if (upgrader < creepConfig[ROLE.upgrader].max) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
-      memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.upgrader].body,
+      name: getCreepName(ROLE.upgrader),
+      opt: {
+        memory: {
+          role: ROLE.upgrader,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
     });
   } else if (builder < creepConfig[ROLE.builder].max) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.builder].body, getCreepName(ROLE.builder), {
-      memory: { role: ROLE.builder, room: MAIN_ROOM, working: false }
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.builder].body,
+      name: getCreepName(ROLE.builder),
+      opt: {
+        memory: {
+          role: ROLE.builder,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
     });
   } else if (repairer < creepConfig[ROLE.repairer].max) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.repairer].body, getCreepName(ROLE.repairer), {
-      memory: { role: ROLE.repairer, room: MAIN_ROOM, working: false }
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.repairer].body,
+      name: getCreepName(ROLE.repairer),
+      opt: {
+        memory: {
+          role: ROLE.repairer,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
     });
-  } else if (upgrader < 10) {
-    SPAWN1.spawnCreep(creepConfig[ROLE.upgrader].body, getCreepName(ROLE.upgrader), {
-      memory: { role: ROLE.upgrader, room: MAIN_ROOM, working: false }
+  } else if (upgrader < 3) {
+    _spawn(SPAWN1, {
+      body: creepConfig[ROLE.upgrader].body,
+      name: getCreepName(ROLE.upgrader),
+      opt: {
+        memory: {
+          role: ROLE.upgrader,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
     });
   }
 }

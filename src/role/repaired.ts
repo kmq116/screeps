@@ -3,7 +3,7 @@ import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 export const repaired = {
   run(creep: Creep): void {
     // 身上携带的能量不足时，就去搬运能量
-    if (shouldGetEnergy(creep)) {
+    if (creep.shouldGetEnergy()) {
       const target = creep.room.find(FIND_STRUCTURES, {
         filter: structure => structure.structureType === STRUCTURE_CONTAINER
       })[0];
@@ -11,7 +11,7 @@ export const repaired = {
         creep.moveTo(target);
       }
       // 能量满了就去升级
-      if (isEnergyFull(creep)) creep.memory.working = true;
+      if (creep.isEnergyFull()) creep.memory.working = true;
     } else if (creep.memory.working === true) {
       const targets = creep.room.find(FIND_STRUCTURES, {
         filter: object => object.hits < object.hitsMax

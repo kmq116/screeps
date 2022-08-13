@@ -25,5 +25,12 @@
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
   "eslint.enable": true,
-  "cSpell.words": ["upgrader", "upgraders"]
+  "cSpell.words": ["upgrader", "upgraders"],
+  "workbench.colorCustomizations": {
+    "editor.lineHighlightBackground": "#1073cf2d",
+    "editor.lineHighlightBorder": "#9fced11f",
+    "activityBar.background": "#053335",
+    "titleBar.activeBackground": "#07474A",
+    "titleBar.activeForeground": "#EFFDFE"
+  }
 }

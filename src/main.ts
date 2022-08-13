@@ -1,4 +1,4 @@
-import { ROLE, generatePixel, getRoleTotalNum } from "role/utils";
+import { ROLE, generatePixel, getRoleTotalNum, isEnergyFull } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { repaired } from "./role/repaired";
 import { roleBuilder } from "./role/builder";
@@ -8,6 +8,7 @@ import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "./spawn/spawn";
 import { MAIN_ROOM, SOURCES } from "sources/sources";
 import { logKeys, logValues } from "./utils/debug_utils";
+import { mountCreep, mountWork } from "mount";
 
 declare global {
   /*
@@ -33,6 +34,13 @@ declare global {
     sourceId?: string; // 目标源id
   }
 
+  interface Creep {
+    isEnergyFull(): boolean;
+    shouldGetEnergy(): boolean;
+    isEnergyEmpty(): boolean;
+    creepWithdraw(target: Structure<STRUCTURE_CONTAINER>, resource: ResourceConstant): void;
+  }
+
   interface RoomMemory {
     creepRoleCounts: Record<ROLE, number>;
   }
@@ -41,10 +49,14 @@ declare global {
   namespace NodeJS {
     interface Global {
       log: any;
+      hasExtension: boolean;
     }
   }
 }
 
+/**
+ * 均匀分配 sources id 到 creeps
+ */
 function averageHarvesterSourceId() {
   const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
   const sourceId = SOURCES.length > 1 ? SOURCES[1].id : SOURCES[0].id;
@@ -62,6 +74,7 @@ const myRoom = Game.rooms[MAIN_ROOM];
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  mountWork();
   generatePixel();
   spawnCreep();
   averageHarvesterSourceId();
@@ -99,6 +112,4 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
     }
   }
-  logKeys(getRoleTotalNum());
-  logValues(getRoleTotalNum());
 });

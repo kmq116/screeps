@@ -3,7 +3,7 @@ import { ROLE } from "./utils";
 export const creepConfig = {
   [ROLE.harvester]: {
     body: [WORK, WORK, CARRY, MOVE],
-    max: 4
+    max: 6
   },
   [ROLE.upgrader]: {
     body: [WORK, CARRY, MOVE],
@@ -19,6 +19,6 @@ export const creepConfig = {
   },
   [ROLE.carrier]: {
     body: [CARRY, CARRY, MOVE],
-    max: 1
+    max: 2
   }
 };
