@@ -1,14 +1,13 @@
-import { ROLE, generatePixel, getRoleTotalNum, isEnergyFull } from "role/utils";
+import { MAIN_ROOM, SOURCES } from "sources/sources";
+import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
+import { mountWork } from "mount";
 import { repaired } from "./role/repaired";
 import { roleBuilder } from "./role/builder";
 import { roleCarrier } from "./role/carrier";
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "./spawn/spawn";
-import { MAIN_ROOM, SOURCES } from "sources/sources";
-import { logKeys, logValues } from "./utils/debug_utils";
-import { mountCreep, mountWork } from "mount";
 
 declare global {
   /*
@@ -69,6 +68,21 @@ function averageHarvesterSourceId() {
   });
 }
 
+function averageCarrierSourceId(): void {
+  const targets: StructureContainer[] = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
+    filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
+  });
+  const sourceId = targets.length > 1 ? targets[1]?.id : targets[0]?.id;
+  const list = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
+  list.forEach((creep, index) => {
+    if (index >= list.length / 2) {
+      creep.memory.sourceId = sourceId;
+    } else {
+      creep.memory.sourceId = targets[0]?.id;
+    }
+  });
+}
+
 const myRoom = Game.rooms[MAIN_ROOM];
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
@@ -78,6 +92,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
   generatePixel();
   spawnCreep();
   averageHarvesterSourceId();
+  averageCarrierSourceId();
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {

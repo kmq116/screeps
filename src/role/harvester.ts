@@ -1,8 +1,5 @@
-import { SOURCES } from "../sources/sources";
 import { repaired } from "./repaired";
-if (Object.keys(SOURCES).length === 0) {
-  console.log("在当前房间获取不到能量矿");
-}
+
 export const roleHarvester = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {

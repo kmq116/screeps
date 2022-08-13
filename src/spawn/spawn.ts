@@ -40,7 +40,7 @@ function _spawn(
 
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
-  const containers = Game.rooms[MAIN_ROOM].find(FIND_STRUCTURES, {
+  const containers = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
 
@@ -121,5 +121,24 @@ export function spawnCreep(): void {
         }
       }
     });
+  } else {
+    if (
+      containers.reduce((acc, cur) => {
+        return acc + cur.store[RESOURCE_ENERGY];
+      }, 0) > 3500
+    ) {
+      _spawn(SPAWN1, {
+        body: creepConfig[ROLE.upgrader].body,
+        name: getCreepName(ROLE.upgrader),
+        opt: {
+          memory: {
+            role: ROLE.upgrader,
+            room: MAIN_ROOM,
+            working: false
+          }
+        }
+      });
+    }
+    console.log("啥也不是");
   }
 }

@@ -1,5 +1,3 @@
-import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
-
 export const repaired = {
   run(creep: Creep): void {
     // 身上携带的能量不足时，就去搬运能量

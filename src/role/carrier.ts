@@ -1,5 +1,3 @@
-import { isEnergyEmpty } from "./utils";
-
 export const roleCarrier = {
   /** @param {Creep} creep **/
   run(creep: Creep): void {

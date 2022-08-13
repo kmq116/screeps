@@ -1,4 +1,3 @@
-import { isEnergyEmpty } from "./utils";
 import { roleUpgrader } from "./upgrader";
 
 export const roleBuilder = {
