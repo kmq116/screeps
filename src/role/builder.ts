@@ -1,4 +1,4 @@
-import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
+import { isEnergyEmpty } from "./utils";
 import { roleUpgrader } from "./upgrader";
 
 export const roleBuilder = {
@@ -13,7 +13,7 @@ export const roleBuilder = {
       }
       if (creep.isEnergyFull()) creep.memory.working = true;
     } else {
-      if (isEnergyEmpty(creep)) creep.memory.working = false;
+      if (creep.isEnergyEmpty()) creep.memory.working = false;
       if (creep.memory.working === true) {
         const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         if (targets.length) {

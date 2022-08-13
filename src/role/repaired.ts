@@ -24,7 +24,7 @@ export const repaired = {
           creep.moveTo(targets[0]);
         }
       }
-      if (isEnergyEmpty(creep)) creep.memory.working = false;
+      if (creep.isEnergyEmpty()) creep.memory.working = false;
     }
   }
 };

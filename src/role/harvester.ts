@@ -1,4 +1,3 @@
-import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
 import { SOURCES } from "../sources/sources";
 import { repaired } from "./repaired";
 if (Object.keys(SOURCES).length === 0) {

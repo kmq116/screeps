@@ -1,4 +1,4 @@
-import { isEnergyEmpty, isEnergyFull, shouldGetEnergy } from "./utils";
+import { isEnergyEmpty } from "./utils";
 
 export const roleCarrier = {
   /** @param {Creep} creep **/
@@ -19,7 +19,7 @@ export const roleCarrier = {
       if (creep.isEnergyFull()) creep.memory.working = true;
     } else if (creep.memory.working === true) {
       creep.say("📦");
-      if (isEnergyEmpty(creep)) creep.memory.working = false;
+      if (creep.isEnergyEmpty()) creep.memory.working = false;
       // 优先补满 spawn 和 extensions
       const spawnOrExtension = creep.room.find(FIND_STRUCTURES, {
         filter: structure => {

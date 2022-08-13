@@ -15,7 +15,7 @@ export const roleUpgrader = {
       if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
         creep.moveTo(creep.room.controller);
       }
-      if (isEnergyEmpty(creep)) creep.memory.working = false;
+      if (creep.isEnergyEmpty()) creep.memory.working = false;
     }
   }
 };
