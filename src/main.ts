@@ -7,7 +7,7 @@ import { roleBuilder } from "./role/builder";
 import { roleCarrier } from "./role/carrier";
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
-import { spawnCreep } from "./spawn/spawn";
+import { spawnCreep } from "spawn/spawn";
 
 declare global {
   /*
@@ -31,6 +31,21 @@ declare global {
     room: string;
     working: boolean;
     sourceId?: string; // 目标源id
+  }
+
+  interface StructureSpawn {
+    spawn(opt: {
+      body: BodyPartConstant[];
+      name: string;
+      opt: {
+        memory: {
+          role: ROLE;
+          room: string;
+          working: boolean;
+          sourceId?: string;
+        };
+      };
+    }): void;
   }
 
   interface Creep {
