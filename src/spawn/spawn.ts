@@ -6,44 +6,53 @@ function getCreepName(role: ROLE): string {
   return `${role}-${Game.time}`;
 }
 
-function _spawn(
-  spawn: StructureSpawn,
-  options: {
-    body: BodyPartConstant[];
-    name: string;
-    opt: {
-      memory: {
-        role: ROLE;
-        room: string;
-        working: boolean;
-        sourceId?: string;
-      };
-    };
+export function logByGameTick(content: string, tick = 10): void {
+  if (Game.time % tick === 0) {
+    console.log(content);
   }
-) {
-  const spawnResult = spawn.spawnCreep(options.body, options.name, options.opt);
-
-  if (spawnResult === ERR_NOT_ENOUGH_ENERGY) {
-    return spawn.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
-      memory: {
-        role: options.opt.memory.role,
-        room: options.opt.memory.room,
-        working: false,
-        sourceId: options.opt.memory.sourceId
-      }
-    });
-  }
-  return spawnResult;
 }
-
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
   const containers = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
+  if (carrier < 1) {
+    console.log("刚需 carrier 小于 1 了");
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.carrier].minBody,
+      name: getCreepName(ROLE.carrier),
+      opt: {
+        memory: {
+          role: ROLE.carrier,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
+    });
+    return;
+  }
+
+  if (harvester < 2) {
+    console.log("刚需 harvester 小于 2 了");
+    const sourceId = SOURCES[0]?.id;
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.harvester].minBody,
+      name: getCreepName(ROLE.harvester),
+      opt: {
+        memory: {
+          role: ROLE.harvester,
+          room: MAIN_ROOM,
+          working: false,
+          sourceId
+        }
+      }
+    });
+    return;
+  }
 
   // 容器数小于 2 的话一直生产采矿的
   if (harvester < creepConfig[ROLE.harvester].max) {
+    logByGameTick(`harvester: ${harvester}`);
     const sourceId = SOURCES[0]?.id;
     // SPAWN1.spawn
     SPAWN1.spawn({
@@ -61,6 +70,7 @@ export function spawnCreep(): void {
   }
   //  只有容器数量大于 1 的时候才制造搬运的 否则不浪费能量去搬运
   else if (carrier < creepConfig[ROLE.carrier].max && containers.length >= 1) {
+    logByGameTick(`carrier: ${carrier}`);
     SPAWN1.spawn({
       body: creepConfig[ROLE.carrier].body,
       name: getCreepName(ROLE.carrier),
@@ -73,6 +83,9 @@ export function spawnCreep(): void {
       }
     });
   } else if (upgrader < creepConfig[ROLE.upgrader].max) {
+    logByGameTick(`upgrader: ${upgrader}`);
+    console.log("升级");
+
     SPAWN1.spawn({
       body: creepConfig[ROLE.upgrader].body,
       name: getCreepName(ROLE.upgrader),
@@ -85,6 +98,7 @@ export function spawnCreep(): void {
       }
     });
   } else if (builder < creepConfig[ROLE.builder].max) {
+    logByGameTick(`builder: ${builder}`);
     SPAWN1.spawn({
       body: creepConfig[ROLE.builder].body,
       name: getCreepName(ROLE.builder),
@@ -97,6 +111,7 @@ export function spawnCreep(): void {
       }
     });
   } else if (repairer < creepConfig[ROLE.repairer].max) {
+    logByGameTick(`repairer: ${repairer}`);
     SPAWN1.spawn({
       body: creepConfig[ROLE.repairer].body,
       name: getCreepName(ROLE.repairer),
@@ -109,6 +124,7 @@ export function spawnCreep(): void {
       }
     });
   } else if (upgrader < 3) {
+    logByGameTick(`upgrader: ${upgrader}`);
     SPAWN1.spawn({
       body: creepConfig[ROLE.upgrader].body,
       name: getCreepName(ROLE.upgrader),
@@ -121,6 +137,7 @@ export function spawnCreep(): void {
       }
     });
   } else {
+    logByGameTick(`harvester: ${harvester}`);
     if (
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];
@@ -138,6 +155,5 @@ export function spawnCreep(): void {
         }
       });
     }
-    console.log("else");
   }
 }

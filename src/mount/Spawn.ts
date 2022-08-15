@@ -1,5 +1,6 @@
-import { creepConfig } from "role/roleConfig";
 import { ROLE } from "role/utils";
+import { creepConfig } from "role/roleConfig";
+import { logByGameTick } from "spawn/spawn";
 
 export class SpawnExtension extends StructureSpawn {
   public spawn(options: {
@@ -14,11 +15,17 @@ export class SpawnExtension extends StructureSpawn {
       };
     };
   }): number | undefined {
-    if (this.spawning) return;
+    console.log("升级 spawn 逻辑", options.opt.memory.role);
+
+    if (this.spawning) {
+      console.log("spawning", this.spawning.name);
+      // return;
+    }
     const spawnResult = this.spawnCreep(options.body, options.name, options.opt);
+    logByGameTick(`计划孵化结果 : ${spawnResult}`);
 
     if (spawnResult === ERR_NOT_ENOUGH_ENERGY) {
-      return this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
+      const result = this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
         memory: {
           role: options.opt.memory.role,
           room: options.opt.memory.room,
@@ -26,6 +33,10 @@ export class SpawnExtension extends StructureSpawn {
           sourceId: options.opt.memory.sourceId
         }
       });
+      console.log(options);
+
+      // logByGameTick(`孵化能量不够，尝试小一点孵化 : ${result}`);
+      return result;
     }
     return spawnResult;
   }
