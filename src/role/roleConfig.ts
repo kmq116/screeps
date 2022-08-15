@@ -1,4 +1,5 @@
 import { ROLE } from "./utils";
+
 const minBodyHasWork = [WORK, CARRY, MOVE];
 const minBodyCarrier = [CARRY, CARRY, MOVE];
 export const creepConfig = {
@@ -8,7 +9,7 @@ export const creepConfig = {
     max: 6
   },
   [ROLE.upgrader]: {
-    body: [WORK, CARRY, MOVE],
+    body: [WORK, WORK, WORK, CARRY, MOVE],
     minBody: minBodyHasWork,
     max: 2
   },
@@ -23,7 +24,7 @@ export const creepConfig = {
     max: 1
   },
   [ROLE.carrier]: {
-    body: [CARRY, CARRY, MOVE],
+    body: [CARRY, MOVE],
     minBody: minBodyCarrier,
     max: 2
   }
