@@ -33,7 +33,6 @@ export class SpawnExtension extends StructureSpawn {
           sourceId: options.opt.memory.sourceId
         }
       });
-      console.log(options);
 
       // logByGameTick(`孵化能量不够，尝试小一点孵化 : ${result}`);
       return result;
