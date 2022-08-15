@@ -138,10 +138,14 @@ export function spawnCreep(): void {
     });
   } else {
     logByGameTick(`不知道干什么可以把村口大粪挑了 hhhh: 尝试生产 builder`);
+    const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
+    const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
+
     if (
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];
-      }, 0) > 3500
+      }, 0) > 2000 &&
+      existEnergy === energyCapacity
     ) {
       SPAWN1.spawn({
         body: creepConfig[ROLE.builder].body,
