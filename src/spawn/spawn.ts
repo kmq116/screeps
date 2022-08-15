@@ -137,7 +137,7 @@ export function spawnCreep(): void {
       }
     });
   } else {
-    logByGameTick(`harvester: ${harvester}`);
+    logByGameTick(`不知道干什么可以把村口大粪挑了 hhhh: 尝试生产 builder`);
     if (
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];

@@ -3,11 +3,6 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import { MAIN_ROOM } from "sources/sources";
 import { averageSourceId } from "sources/utils";
 import { mountWork } from "mount";
-import { repaired } from "./role/repaired";
-import { roleBuilder } from "./role/builder";
-import { roleCarrier } from "./role/carrier";
-import { roleHarvester } from "role/harvester";
-import { roleUpgrader } from "role/upgrader";
 import { spawnCreep } from "spawn/spawn";
 
 declare global {
@@ -53,7 +48,10 @@ declare global {
     isEnergyFull(): boolean;
     shouldGetEnergy(): boolean;
     isEnergyEmpty(): boolean;
-    creepWithdraw(target: Structure<STRUCTURE_CONTAINER>, resource: ResourceConstant): void;
+    creepWithdraw(target: AnyStructure, resource: ResourceConstant): void;
+    creepBuild(target: ConstructionSite<BuildableStructureConstant>): void;
+    work(): void;
+    creepTransfer(target: AnyCreep | Structure<StructureConstant>, resource: ResourceConstant): void;
   }
 
   interface RoomMemory {
@@ -100,25 +98,6 @@ function clearCreepsMemory() {
 function creepWork(): void {
   Object.values(Game.creeps).forEach(creep => {
     myRoom.memory.creepRoleCounts[creep.memory.role] = (myRoom.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
-
-    if (creep.memory.role === ROLE.harvester) {
-      roleHarvester.run(creep);
-    } else if (creep.memory.role === ROLE.upgrader) {
-      roleUpgrader.run(creep);
-    } else if (creep.memory.role === ROLE.carrier) {
-      roleCarrier.run(creep);
-    } else if (creep.memory.role === ROLE.repairer) {
-      repaired.run(creep);
-    } else if (creep.memory.role === ROLE.builder) {
-      roleBuilder.run(creep);
-    } else {
-      const [role] = creep.name.split("-");
-      console.log(`Creep ${creep.name} 没有对应的角色配置，当前类型是 ${creep.memory.role as string}`);
-      if (role) {
-        creep.memory.role = role as ROLE;
-      } else {
-        roleBuilder.run(creep);
-      }
-    }
+    creep.work();
   });
 }

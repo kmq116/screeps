@@ -9,7 +9,7 @@ export const creepConfig = {
     max: 6
   },
   [ROLE.upgrader]: {
-    body: [WORK, WORK, WORK, CARRY, MOVE],
+    body: [WORK, WORK, WORK, CARRY, CARRY, MOVE],
     minBody: minBodyHasWork,
     max: 2
   },

@@ -1,45 +1,31 @@
-import { roleUpgrader } from "./upgrader";
+import { upgrader } from "./upgrader";
 
-export const roleBuilder = {
-  /** @param {Creep} creep **/
-  run(creep: Creep): void {
-    if (creep.shouldGetEnergy()) {
-      if (creep.memory.sourceId) {
-        const source = Game.getObjectById<StructureContainer>(creep.memory.sourceId);
-        if (source) {
-          if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
-          }
-          if (source) {
-            if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-              creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
-            }
-          }
-        }
-      } else {
-        const target = creep.room.find(FIND_STRUCTURES, {
-          filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
-        })[0];
-        if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(target);
-        }
-      }
-
-      if (creep.isEnergyFull()) creep.memory.working = true;
+export const builder = (
+  sourceId?: string
+): {
+  target(creep: Creep): void;
+  source(creep: Creep): void;
+} => ({
+  target(creep: Creep) {
+    const targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+      filter: s => s.structureType === STRUCTURE_ROAD
+    });
+    if (targets) {
+      creep.creepBuild(targets);
     } else {
-      if (creep.isEnergyEmpty()) creep.memory.working = false;
-      if (creep.memory.working === true) {
-        const targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
-          filter: s => s.structureType === STRUCTURE_ROAD
-        });
-        if (targets) {
-          if (creep.build(targets) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(targets, { visualizePathStyle: { stroke: "#ffffff" } });
-          }
-        } else {
-          roleUpgrader.run(creep);
-        }
-      }
+      // 没事干可以去升级控制器
+      upgrader("").target(creep);
+    }
+  },
+  source(creep: Creep) {
+    if (sourceId) {
+      const source = Game.getObjectById<StructureContainer>(sourceId);
+      if (source) creep.creepWithdraw(source, RESOURCE_ENERGY);
+    } else {
+      const target = creep.room.find(FIND_STRUCTURES, {
+        filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+      })[0];
+      if (target) creep.creepWithdraw(target, RESOURCE_ENERGY);
     }
   }
-};
+});
