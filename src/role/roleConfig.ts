@@ -14,7 +14,7 @@ export const creepConfig = {
     max: 2
   },
   [ROLE.builder]: {
-    body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE],
+    body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE],
     minBody: minBodyHasWork,
     max: 2
   },

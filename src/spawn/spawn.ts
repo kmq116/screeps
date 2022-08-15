@@ -6,7 +6,7 @@ function getCreepName(role: ROLE): string {
   return `${role}-${Game.time}`;
 }
 
-export function logByGameTick(content: string, tick = 10): void {
+export function logByGameTick(content: string, tick = 3): void {
   if (Game.time % tick === 0) {
     console.log(content);
   }
