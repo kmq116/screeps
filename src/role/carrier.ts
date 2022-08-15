@@ -29,7 +29,7 @@ export const roleCarrier = {
       creep.say("📦");
       if (creep.isEnergyEmpty()) creep.memory.working = false;
       // 优先补满 spawn 和 extensions
-      const spawnOrExtension = creep.room.find(FIND_STRUCTURES, {
+      const spawnOrExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
           return (
             (structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_SPAWN) &&
@@ -37,13 +37,10 @@ export const roleCarrier = {
           );
         }
       });
-      const containerTargets = creep.room.find(FIND_STRUCTURES, {
-        filter: s => s.structureType === STRUCTURE_CONTAINER
-      });
-      const targets = spawnOrExtension.length ? spawnOrExtension : containerTargets;
-      if (targets.length > 0) {
-        if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
+
+      if (spawnOrExtension) {
+        if (creep.transfer(spawnOrExtension, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(spawnOrExtension, { visualizePathStyle: { stroke: "#ffffff" } });
         }
       }
     }

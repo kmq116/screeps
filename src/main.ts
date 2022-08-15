@@ -1,6 +1,7 @@
-import { MAIN_ROOM, SOURCES } from "sources/sources";
 import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
+import { MAIN_ROOM } from "sources/sources";
+import { averageSourceId } from "sources/utils";
 import { mountWork } from "mount";
 import { repaired } from "./role/repaired";
 import { roleBuilder } from "./role/builder";
@@ -68,37 +69,6 @@ declare global {
   }
 }
 
-/**
- * 均匀分配 sources id 到 creeps
- */
-function averageHarvesterSourceId() {
-  const harvesters = _.filter(Game.creeps, creep => creep.memory.role === ROLE.harvester);
-  const sourceId = SOURCES.length > 1 ? SOURCES[1].id : SOURCES[0].id;
-  harvesters.forEach((creep, index) => {
-    if (index > harvesters.length / 2 - 1) {
-      creep.memory.sourceId = sourceId;
-    } else {
-      creep.memory.sourceId = SOURCES[0].id;
-    }
-  });
-}
-
-function averageCarrierSourceId(): void {
-  const targets: StructureContainer[] = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
-    filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
-  });
-
-  const sourceId = targets.length > 1 ? targets[1]?.id : targets[0]?.id;
-  const list = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
-  list.forEach((creep, index) => {
-    if (index > list.length / 2 - 1) {
-      creep.memory.sourceId = sourceId;
-    } else {
-      creep.memory.sourceId = targets[0]?.id;
-    }
-  });
-}
-
 const myRoom = Game.rooms[MAIN_ROOM];
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
@@ -107,20 +77,28 @@ export const loop = ErrorMapper.wrapLoop(() => {
   mountWork();
   generatePixel();
   spawnCreep();
-  averageHarvesterSourceId();
-  averageCarrierSourceId();
-  // Automatically delete memory of missing creeps
-  for (const name in Memory.creeps) {
+  averageSourceId();
+  clearCreepsMemory();
+  initRoomMemory();
+  creepWork();
+});
+
+function initRoomMemory() {
+  // 初始化房间的内存属性为 0
+  Object.keys(ROLE).forEach(roleKey => {
+    myRoom.memory.creepRoleCounts[roleKey as ROLE] = 0;
+  });
+}
+
+function clearCreepsMemory() {
+  Object.keys(Memory.creeps).forEach(name => {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
     }
-  }
-  // 初始化房间的内存属性为 0
-  for (const roleKey in ROLE) {
-    myRoom.memory.creepRoleCounts[roleKey as ROLE] = 0;
-  }
-  for (const name in Game.creeps) {
-    const creep = Game.creeps[name];
+  });
+}
+function creepWork(): void {
+  Object.values(Game.creeps).forEach(creep => {
     myRoom.memory.creepRoleCounts[creep.memory.role] = (myRoom.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
 
     if (creep.memory.role === ROLE.harvester) {
@@ -142,5 +120,5 @@ export const loop = ErrorMapper.wrapLoop(() => {
         roleBuilder.run(creep);
       }
     }
-  }
-});
+  });
+}
