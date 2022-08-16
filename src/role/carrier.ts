@@ -25,9 +25,7 @@ export const carrier = (
     if (sourceId) {
       const source = Game.getObjectById<StructureContainer>(sourceId);
       if (source) {
-        if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
-        }
+        creep.creepWithdraw(source, RESOURCE_ENERGY);
       }
     } else {
       const targets = creep.room.find(FIND_STRUCTURES, {

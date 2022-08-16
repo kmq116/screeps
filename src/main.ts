@@ -23,8 +23,8 @@ declare global {
   }
 
   interface CreepMemory {
-    role: ROLE;
-    room: string;
+    readonly role: ROLE;
+    readonly room: string;
     working: boolean;
     sourceId?: string; // 目标源id
   }
@@ -52,6 +52,8 @@ declare global {
     creepBuild(target: ConstructionSite<BuildableStructureConstant>): void;
     work(): void;
     creepTransfer(target: AnyCreep | Structure<StructureConstant>, resource: ResourceConstant): void;
+    creepRepair(target: Structure<StructureConstant>): void;
+    creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void;
   }
 
   interface RoomMemory {

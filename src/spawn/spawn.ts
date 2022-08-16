@@ -123,28 +123,14 @@ export function spawnCreep(): void {
         }
       }
     });
-  } else if (upgrader < 3) {
-    logByGameTick(`upgrader: ${upgrader}`);
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.upgrader].body,
-      name: getCreepName(ROLE.upgrader),
-      opt: {
-        memory: {
-          role: ROLE.upgrader,
-          room: MAIN_ROOM,
-          working: false
-        }
-      }
-    });
   } else {
-    logByGameTick(`不知道干什么可以把村口大粪挑了 hhhh: 尝试生产 builder`);
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
 
     if (
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];
-      }, 0) > 2000 &&
+      }, 0) > 3000 &&
       existEnergy === energyCapacity
     ) {
       SPAWN1.spawn({
@@ -153,7 +139,7 @@ export function spawnCreep(): void {
         opt: {
           memory: {
             role: ROLE.builder,
-            room: MAIN_ROOM,
+            room: "W5S2",
             working: false
           }
         }

@@ -16,7 +16,6 @@ export const upgrader = (
       filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
     })[0];
     // 如果没有找到可以取能量的地方，就转成收集者去挖矿
-    if (!target) creep.memory.role = ROLE.harvester;
     if (target) creep.creepWithdraw(target, RESOURCE_ENERGY);
   }
 });

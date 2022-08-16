@@ -7,8 +7,16 @@ export const builder = (
   source(creep: Creep): void;
 } => ({
   target(creep: Creep) {
+    if (creep.memory.room !== creep.room.name) {
+      // console.log(creep.memory.room);
+      // console.log(creep.room);
+    }
     const targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
-      filter: s => s.structureType === STRUCTURE_ROAD
+      filter: s =>
+        s.structureType === STRUCTURE_ROAD ||
+        s.structureType === STRUCTURE_CONTAINER ||
+        s.structureType === STRUCTURE_EXTENSION ||
+        s.structureType === STRUCTURE_TOWER
     });
     if (targets) {
       creep.creepBuild(targets);

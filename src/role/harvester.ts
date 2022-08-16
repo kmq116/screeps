@@ -17,17 +17,12 @@ export const harvester = (
 
     if (siteTargets.length) {
       creep.say("🚧 build");
-      if (creep.build(siteTargets[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(siteTargets[0]);
-        return;
-      }
+      creep.creepBuild(siteTargets[0]);
     } else if (container.length) {
       if (container[0].hits < container[0].hitsMax) {
-        if (creep.repair(container[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(container[0]);
-        }
-      } else if (creep.transfer(container[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(container[0]);
+        creep.creepRepair(container[0]);
+      } else {
+        creep.creepTransfer(container[0], RESOURCE_ENERGY);
       }
     } else {
       // 优先补满 spawn 和 extensions
@@ -44,9 +39,7 @@ export const harvester = (
       });
       const targets = spawnOrExtension.length ? spawnOrExtension : containerTargets;
       if (targets.length > 0) {
-        if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
-        }
+        creep.creepTransfer(targets[0], RESOURCE_ENERGY);
       }
     }
   },
@@ -61,9 +54,8 @@ export const harvester = (
       return;
     }
     // creep.say("🔄 harvest");
-    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(source);
-    }
+
+    creep.creepHarvest(source);
     // 在能量附近 检查有没有 container 工地
     if (creep.pos.inRangeTo(source, 1)) {
       const targets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 10, {

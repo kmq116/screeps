@@ -26,6 +26,18 @@ export default class CreepExtension extends Creep {
     }
   }
 
+  public creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void {
+    if (this.harvest(target) === ERR_NOT_IN_RANGE) {
+      this.moveTo(target);
+    }
+  }
+
+  public creepRepair(target: Structure<StructureConstant>): void {
+    if (this.repair(target) === ERR_NOT_IN_RANGE) {
+      this.moveTo(target);
+    }
+  }
+
   public creepBuild(target: ConstructionSite<BuildableStructureConstant>): void {
     if (this.build(target) === ERR_NOT_IN_RANGE) {
       this.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
@@ -49,11 +61,7 @@ export default class CreepExtension extends Creep {
     const creepConfig = creepConfigs[this.memory.role];
     if (!creepConfig) {
       console.log("找不到角色配置，可能还未发布", this.memory.role);
-      //  尝试根据名称裁剪出角色类型
-      const [role] = this.name.split("-");
-      if (role) {
-        this.memory.role = role as ROLE;
-      }
+      return;
     }
     const config = creepConfig(this.memory.sourceId);
 
