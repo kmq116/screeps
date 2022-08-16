@@ -60,6 +60,10 @@ declare global {
     creepRoleCounts: Record<ROLE, number>;
   }
 
+  interface Structure {
+    work?(): void;
+  }
+
   // Syntax for adding proprties to `global` (ex "global.log")
   namespace NodeJS {
     interface Global {
@@ -81,6 +85,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
   clearCreepsMemory();
   initRoomMemory();
   creepWork();
+  Object.values(Game.structures).forEach(s => {
+    if (s.work) s.work();
+  });
 });
 
 function initRoomMemory() {

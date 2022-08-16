@@ -11,7 +11,9 @@ export const carrier = (
     const spawnOrExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
         return (
-          (structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_SPAWN) &&
+          (structure.structureType === STRUCTURE_EXTENSION ||
+            structure.structureType === STRUCTURE_SPAWN ||
+            structure.structureType === STRUCTURE_TOWER) &&
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         );
       }
@@ -22,19 +24,12 @@ export const carrier = (
     }
   },
   source(creep: Creep) {
-    if (sourceId) {
-      const source = Game.getObjectById<StructureContainer>(sourceId);
-      if (source) {
-        creep.creepWithdraw(source, RESOURCE_ENERGY);
+    const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: structure => {
+        return structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 200;
       }
-    } else {
-      const targets = creep.room.find(FIND_STRUCTURES, {
-        filter: structure => {
-          return structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0;
-        }
-      });
+    });
 
-      if (targets.length) creep.creepWithdraw(targets[0], RESOURCE_ENERGY);
-    }
+    if (target) creep.creepWithdraw(target, RESOURCE_ENERGY);
   }
 });

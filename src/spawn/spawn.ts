@@ -84,7 +84,6 @@ export function spawnCreep(): void {
     });
   } else if (upgrader < creepConfig[ROLE.upgrader].max) {
     logByGameTick(`upgrader: ${upgrader}`);
-    console.log("升级");
 
     SPAWN1.spawn({
       body: creepConfig[ROLE.upgrader].body,

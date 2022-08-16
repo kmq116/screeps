@@ -20,6 +20,7 @@ function averageCarrierSourceId(): void {
   const targets: StructureContainer[] = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
+  console.log(targets, "===============");
 
   const sourceId = targets.length > 1 ? targets[1]?.id : targets[0]?.id;
   const list = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
@@ -41,5 +42,4 @@ function averageCarrierSourceId(): void {
 }
 export function averageSourceId(): void {
   averageHarvesterSourceId();
-  averageCarrierSourceId();
 }
