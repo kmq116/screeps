@@ -1,6 +1,7 @@
 import { ROLE } from "./utils";
 
 const minBodyHasWork = [WORK, CARRY, MOVE];
+const minBodyHasClaim = [WORK, CARRY, MOVE];
 const minBodyCarrier = [CARRY, MOVE, CARRY, MOVE];
 export const creepConfig = {
   [ROLE.harvester]: {
@@ -26,6 +27,21 @@ export const creepConfig = {
   [ROLE.carrier]: {
     body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
     minBody: minBodyCarrier,
+    max: 3
+  },
+  [ROLE.explorerHarvester]: {
+    body: [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+    minBody: minBodyHasWork,
+    max: 1
+  },
+  [ROLE.explorerCarrier]: {
+    body: [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
+    minBody: minBodyHasWork,
     max: 2
+  },
+  [ROLE.reserveController]: {
+    body: [CARRY, CLAIM, MOVE],
+    minBody: minBodyHasClaim,
+    max: 1
   }
 };

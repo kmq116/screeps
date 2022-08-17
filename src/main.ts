@@ -1,6 +1,6 @@
 import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
-import { MAIN_ROOM } from "sources/sources";
+import { MAIN_ROOM, RIGHT_ROOM } from "sources/sources";
 import { averageSourceId } from "sources/utils";
 import { mountWork } from "mount";
 import { spawnCreep } from "spawn/spawn";
@@ -91,9 +91,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
 });
 
 function initRoomMemory() {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  Game.rooms[RIGHT_ROOM].memory.creepRoleCounts = {} as any;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  Game.rooms[MAIN_ROOM].memory.creepRoleCounts = {} as any;
   // 初始化房间的内存属性为 0
   Object.keys(ROLE).forEach(roleKey => {
     myRoom.memory.creepRoleCounts[roleKey as ROLE] = 0;
+    Game.rooms[RIGHT_ROOM].memory.creepRoleCounts[roleKey as ROLE] = 0;
   });
 }
 
@@ -106,7 +111,8 @@ function clearCreepsMemory() {
 }
 function creepWork(): void {
   Object.values(Game.creeps).forEach(creep => {
-    myRoom.memory.creepRoleCounts[creep.memory.role] = (myRoom.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
+    const roomObj = Game.rooms[creep.memory.room];
+    roomObj.memory.creepRoleCounts[creep.memory.role] = (roomObj.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
     creep.work();
   });
 }

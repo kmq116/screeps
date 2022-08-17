@@ -1,6 +1,5 @@
 import { ROLE } from "role/utils";
 import { creepConfig } from "role/roleConfig";
-import { logByGameTick } from "spawn/spawn";
 
 export class SpawnExtension extends StructureSpawn {
   public spawn(options: {

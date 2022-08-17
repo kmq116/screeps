@@ -1,4 +1,4 @@
-import { MAIN_ROOM, SOURCES, SPAWN1 } from "sources/sources";
+import { MAIN_ROOM, RIGHT_ROOM, SOURCES, SPAWN1 } from "sources/sources";
 import { ROLE, getRoleTotalNum } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
 
@@ -13,6 +13,8 @@ export function logByGameTick(content: string, tick = 3): void {
 }
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
+  const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum(RIGHT_ROOM);
+
   const containers = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
@@ -122,6 +124,42 @@ export function spawnCreep(): void {
         }
       }
     });
+  } else if (explorerHarvester < creepConfig[ROLE.explorerHarvester].max) {
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.explorerHarvester].body,
+      name: getCreepName(ROLE.explorerHarvester),
+      opt: {
+        memory: {
+          role: ROLE.explorerHarvester,
+          room: "W5S2",
+          working: false
+        }
+      }
+    });
+  } else if (explorerCarrier < creepConfig[ROLE.explorerCarrier].max) {
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.explorerCarrier].body,
+      name: getCreepName(ROLE.explorerCarrier),
+      opt: {
+        memory: {
+          role: ROLE.explorerCarrier,
+          room: "W5S2",
+          working: false
+        }
+      }
+    });
+  } else if (reserveController < creepConfig[ROLE.reserveController].max) {
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.reserveController].body,
+      name: getCreepName(ROLE.reserveController),
+      opt: {
+        memory: {
+          role: ROLE.reserveController,
+          room: "W5S2",
+          working: false
+        }
+      }
+    });
   } else {
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
@@ -138,7 +176,7 @@ export function spawnCreep(): void {
         opt: {
           memory: {
             role: ROLE.builder,
-            room: "W5S2",
+            room: MAIN_ROOM,
             working: false
           }
         }

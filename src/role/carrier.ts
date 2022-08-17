@@ -6,13 +6,12 @@ export const carrier = (
 } => ({
   target(creep: Creep) {
     creep.say("📦");
-    if (creep.isEnergyEmpty()) creep.memory.working = false;
     // 优先补满 spawn 和 extensions
     const spawnOrExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
         return (
-          (structure.structureType === STRUCTURE_EXTENSION ||
-            structure.structureType === STRUCTURE_SPAWN ||
+          (structure.structureType === STRUCTURE_SPAWN ||
+            structure.structureType === STRUCTURE_EXTENSION ||
             structure.structureType === STRUCTURE_TOWER) &&
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         );
@@ -24,12 +23,20 @@ export const carrier = (
     }
   },
   source(creep: Creep) {
-    const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: structure => {
-        return structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 200;
+    const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: s => {
+        return s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 50;
       }
     });
-
-    if (target) creep.creepWithdraw(target, RESOURCE_ENERGY);
+    const droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
+      filter: resource => resource.resourceType === RESOURCE_ENERGY
+    });
+    if (droppedEnergy && droppedEnergy.amount >= creep.store.getCapacity() / 2) {
+      if (creep.pickup(droppedEnergy) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedEnergy);
+      }
+      return;
+    }
+    if (structure) creep.creepWithdraw(structure, RESOURCE_ENERGY);
   }
 });
