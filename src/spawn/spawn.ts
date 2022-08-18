@@ -170,7 +170,8 @@ export function spawnCreep(): void {
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];
       }, 0) > 3000 &&
-      existEnergy === energyCapacity
+      existEnergy === energyCapacity &&
+      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum(RIGHT_ROOM))) <= 30
     ) {
       SPAWN1.spawn({
         body: creepConfig[ROLE.builder].body,

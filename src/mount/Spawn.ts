@@ -1,7 +1,7 @@
 import { ROLE } from "role/utils";
 import { creepConfig } from "role/roleConfig";
 import { MAIN_ROOM } from "sources/sources";
-const needMinBody = [ROLE.harvester, ROLE.carrier, ROLE.upgrader];
+const needMinBody = [ROLE.harvester, ROLE.carrier, ROLE.upgrader, ROLE.builder];
 export class SpawnExtension extends StructureSpawn {
   public spawn(options: {
     body: BodyPartConstant[];
