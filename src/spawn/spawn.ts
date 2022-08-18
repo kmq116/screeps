@@ -14,6 +14,9 @@ export function logByGameTick(content: string, tick = 3): void {
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
   const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum(RIGHT_ROOM);
+  if (_.sum(_.values(getRoleTotalNum())) === 0) {
+    Game.notify("所有的 creep 都寄了，建议上线看看情况", 0);
+  }
   const containers = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });

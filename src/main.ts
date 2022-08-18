@@ -115,7 +115,6 @@ function creepWork(): void {
   Object.values(Game.creeps).forEach(creep => {
     Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] =
       (Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] || 0) + 1;
-    console.log(Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role]);
 
     creep.work();
   });

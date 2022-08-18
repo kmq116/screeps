@@ -20,6 +20,13 @@ export const carrier = (
 
     if (spawnOrExtension) {
       creep.creepTransfer(spawnOrExtension, RESOURCE_ENERGY);
+    } else {
+      const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: s => s.structureType === STRUCTURE_STORAGE
+      });
+      if (storage) {
+        creep.creepTransfer(storage, RESOURCE_ENERGY);
+      }
     }
   },
   source(creep: Creep) {
