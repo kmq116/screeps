@@ -77,12 +77,10 @@ declare global {
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  initRoomMemory();
   mountWork();
   generatePixel();
   spawnCreep();
   averageSourceId();
-  clearCreepsMemory();
   creepWork();
   Object.values(Game.structures).forEach(s => {
     if (s.work) s.work();
@@ -111,11 +109,14 @@ function clearCreepsMemory() {
   });
 }
 function creepWork(): void {
+  clearCreepsMemory();
+  //  这里因为是每一个 tick 都要执行 所以执行顺序要在 creepWork 之前，如果太过靠前，会导致数据永远都是 0
+  initRoomMemory();
   Object.values(Game.creeps).forEach(creep => {
-    const roomObj = Game.rooms[creep.memory.room];
-
     Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] =
-      (roomObj.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
+      (Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] || 0) + 1;
+    console.log(Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role]);
+
     creep.work();
   });
 }
