@@ -20,6 +20,7 @@ declare global {
     uuid: number;
     log: any;
     watch: Partial<Record<"expressions" | "values", any>>;
+    roomMemory: Record<string, { creepRoleCounts: Record<ROLE, number> }>;
   }
 
   interface CreepMemory {
@@ -73,17 +74,15 @@ declare global {
   }
 }
 
-const myRoom = Game.rooms[MAIN_ROOM];
-
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  initRoomMemory();
   mountWork();
   generatePixel();
   spawnCreep();
   averageSourceId();
   clearCreepsMemory();
-  initRoomMemory();
   creepWork();
   Object.values(Game.structures).forEach(s => {
     if (s.work) s.work();
@@ -92,13 +91,15 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
 function initRoomMemory() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  Game.rooms[RIGHT_ROOM].memory.creepRoleCounts = {} as any;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  Game.rooms[MAIN_ROOM].memory.creepRoleCounts = {} as any;
+  Memory.roomMemory = {
+    [MAIN_ROOM]: { creepRoleCounts: {} },
+    [RIGHT_ROOM]: { creepRoleCounts: {} }
+  } as any;
+
   // 初始化房间的内存属性为 0
   Object.keys(ROLE).forEach(roleKey => {
-    myRoom.memory.creepRoleCounts[roleKey as ROLE] = 0;
-    Game.rooms[RIGHT_ROOM].memory.creepRoleCounts[roleKey as ROLE] = 0;
+    Memory.roomMemory[MAIN_ROOM].creepRoleCounts[roleKey as ROLE] = 0;
+    Memory.roomMemory[RIGHT_ROOM].creepRoleCounts[roleKey as ROLE] = 0;
   });
 }
 
@@ -112,7 +113,9 @@ function clearCreepsMemory() {
 function creepWork(): void {
   Object.values(Game.creeps).forEach(creep => {
     const roomObj = Game.rooms[creep.memory.room];
-    roomObj.memory.creepRoleCounts[creep.memory.role] = (roomObj.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
+
+    Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] =
+      (roomObj.memory.creepRoleCounts[creep.memory.role] || 0) + 1;
     creep.work();
   });
 }

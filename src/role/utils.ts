@@ -24,5 +24,5 @@ export function generatePixel(cpuLimit = 7000): void {
 }
 
 export const getRoleTotalNum = (roomId = MAIN_ROOM): Record<ROLE, number> => {
-  return Game.rooms[roomId].memory.creepRoleCounts;
+  return Memory.roomMemory[roomId].creepRoleCounts;
 };
