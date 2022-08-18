@@ -5,6 +5,13 @@ export const repairer = (
   source(creep: Creep): void;
 } => ({
   target(creep: Creep) {
+    const rampart = creep.room.find(FIND_STRUCTURES, {
+      filter: structure => structure.structureType === STRUCTURE_RAMPART && structure.ticksToDecay < 20
+    });
+    if (rampart.length) {
+      creep.creepRepair(rampart[0]);
+      return;
+    }
     const targets = creep.room.find(FIND_STRUCTURES, {
       filter: object => object.hits < object.hitsMax
     });

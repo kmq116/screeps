@@ -54,7 +54,6 @@ export function spawnCreep(): void {
     return;
   }
 
-  // 容器数小于 2 的话一直生产采矿的
   if (harvester < creepConfig[ROLE.harvester].max) {
     logByGameTick(`harvester: ${harvester}`);
     const sourceId = SOURCES[0]?.id;
@@ -158,7 +157,8 @@ export function spawnCreep(): void {
         memory: {
           role: ROLE.reserveController,
           room: "W5S2",
-          working: false
+          working: false,
+          sourceId: "5bbcac9a9099fc012e635d27"
         }
       }
     });

@@ -7,18 +7,24 @@ export const reserveController = (
   source(creep: Creep): void;
 } => ({
   target(creep: Creep) {
-    const controller = Game.rooms[RIGHT_ROOM].controller;
-    if (controller) {
-      if (creep.reserveController(controller) === ERR_NOT_IN_RANGE) {
-        creep.reserveController(controller);
+    if (sourceId) {
+      const controller = Game.getObjectById<StructureController>(sourceId);
+      if (controller) {
+        console.log(creep.reserveController(controller));
+
+        if (creep.reserveController(controller) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(controller);
+        }
       }
     }
   },
   source(creep: Creep) {
-    const controller = Game.rooms[RIGHT_ROOM].controller;
-    if (controller) {
-      if (creep.reserveController(controller) === ERR_NOT_IN_RANGE) {
-        creep.reserveController(controller);
+    if (sourceId) {
+      const controller = Game.getObjectById<StructureController>(sourceId);
+      if (controller) {
+        if (creep.reserveController(controller) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(controller);
+        }
       }
     }
   }

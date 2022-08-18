@@ -30,11 +30,6 @@ export const carrier = (
     }
   },
   source(creep: Creep) {
-    const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s => {
-        return s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 50;
-      }
-    });
     const droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
       filter: resource => resource.resourceType === RESOURCE_ENERGY
     });
@@ -44,6 +39,14 @@ export const carrier = (
       }
       return;
     }
+    const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: s => {
+        return (
+          (s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_STORAGE) &&
+          s.store[RESOURCE_ENERGY] > 50
+        );
+      }
+    });
     if (structure) creep.creepWithdraw(structure, RESOURCE_ENERGY);
   }
 });

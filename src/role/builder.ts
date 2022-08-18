@@ -13,7 +13,9 @@ export const builder = (
         s.structureType === STRUCTURE_CONTAINER ||
         s.structureType === STRUCTURE_EXTENSION ||
         s.structureType === STRUCTURE_TOWER ||
-        s.structureType === STRUCTURE_STORAGE
+        s.structureType === STRUCTURE_STORAGE ||
+        s.structureType === STRUCTURE_WALL ||
+        s.structureType === STRUCTURE_RAMPART
     });
     if (targets) {
       creep.creepBuild(targets);
