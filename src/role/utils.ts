@@ -26,3 +26,17 @@ export function generatePixel(cpuLimit = 7000): void {
 export const getRoleTotalNum = (roomId = MAIN_ROOM): Record<ROLE, number> => {
   return Memory.roomMemory[roomId].creepRoleCounts;
 };
+
+export const findStorages = (creep: Creep) => {
+  return creep.room.find(FIND_STRUCTURES, {
+    filter: structure => structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0
+  });
+};
+export const findContainers = (creep: Creep) => {
+  return creep.room.find(FIND_STRUCTURES, {
+    filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+  });
+};
+
+const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
+const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
