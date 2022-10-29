@@ -1,6 +1,6 @@
+import { ALL_ROOM_LIST, MAIN_ROOM, RIGHT_ROOM } from "sources/sources";
 import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
-import { MAIN_ROOM, RIGHT_ROOM } from "sources/sources";
 import { averageSourceId } from "sources/utils";
 import { mountWork } from "mount";
 import { spawnCreep } from "spawn/spawn";
@@ -57,9 +57,7 @@ declare global {
     creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void;
   }
 
-  interface RoomMemory {
-    creepRoleCounts: Record<ROLE, number>;
-  }
+  interface RoomMemory {}
 
   interface Structure {
     work?(): void;
@@ -88,19 +86,22 @@ export const loop = ErrorMapper.wrapLoop(() => {
 });
 
 function initRoomMemory() {
+  const ROOM_RECORD: any = {};
+  ALL_ROOM_LIST.forEach(roomCode => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ROOM_RECORD[roomCode] = { creepRoleCounts: {} };
+  });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  Memory.roomMemory = {
-    [MAIN_ROOM]: { creepRoleCounts: {} },
-    [RIGHT_ROOM]: { creepRoleCounts: {} }
-  } as any;
+  Memory.roomMemory = ROOM_RECORD;
 
   // 初始化房间的内存属性为 0
   Object.keys(ROLE).forEach(roleKey => {
-    Memory.roomMemory[MAIN_ROOM].creepRoleCounts[roleKey as ROLE] = 0;
-    Memory.roomMemory[RIGHT_ROOM].creepRoleCounts[roleKey as ROLE] = 0;
+    ALL_ROOM_LIST.forEach(roomCode => {
+      Memory.roomMemory[roomCode].creepRoleCounts[roleKey as ROLE] = 0;
+    });
   });
 }
-
+// 清除 creep 的內存数据
 function clearCreepsMemory() {
   Object.keys(Memory.creeps).forEach(name => {
     if (!(name in Game.creeps)) {
@@ -115,7 +116,6 @@ function creepWork(): void {
   Object.values(Game.creeps).forEach(creep => {
     Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] =
       (Memory.roomMemory[creep.memory.room].creepRoleCounts[creep.memory.role] || 0) + 1;
-
     creep.work();
   });
 }

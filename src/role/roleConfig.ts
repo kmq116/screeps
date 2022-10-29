@@ -12,7 +12,7 @@ export const creepConfig = {
   [ROLE.upgrader]: {
     body: [WORK, WORK, WORK, CARRY, CARRY, MOVE],
     minBody: minBodyHasWork,
-    max: 2
+    max: 6
   },
   [ROLE.builder]: {
     body: [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE],
@@ -30,14 +30,14 @@ export const creepConfig = {
     max: 3
   },
   [ROLE.explorerHarvester]: {
-    body: [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+    body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
     minBody: minBodyHasWork,
     max: 1
   },
   [ROLE.explorerCarrier]: {
     body: [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
     minBody: minBodyHasWork,
-    max: 4
+    max: 3
   },
   [ROLE.reserveController]: {
     body: [CARRY, CLAIM, MOVE],

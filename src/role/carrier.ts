@@ -39,14 +39,22 @@ export const carrier = (
       }
       return;
     }
-    const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: s => {
-        return (
-          (s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_STORAGE) &&
-          s.store[RESOURCE_ENERGY] > 50
-        );
+        return s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 50;
       }
     });
-    if (structure) creep.creepWithdraw(structure, RESOURCE_ENERGY);
+    if (container) {
+      creep.creepWithdraw(container, RESOURCE_ENERGY);
+      return;
+    }
+    const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: s => {
+        return s.structureType === STRUCTURE_STORAGE && s.store[RESOURCE_ENERGY] > 50;
+      }
+    });
+    if (storage) {
+      creep.creepWithdraw(storage, RESOURCE_ENERGY);
+    }
   }
 });
