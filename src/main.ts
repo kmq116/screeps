@@ -1,4 +1,4 @@
-import { ALL_ROOM_LIST, MAIN_ROOM, RIGHT_ROOM } from "sources/sources";
+import { ALL_ROOM_LIST, MAIN_ROOM, RIGHT_ROOM, SOURCES } from "sources/sources";
 import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { averageSourceId } from "sources/utils";
@@ -71,15 +71,15 @@ declare global {
     }
   }
 }
-
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  console.log("版本号 v3");
   mountWork();
   generatePixel();
+  creepWork();
   spawnCreep();
   averageSourceId();
-  creepWork();
   Object.values(Game.structures).forEach(s => {
     if (s.work) s.work();
   });
@@ -93,7 +93,6 @@ function initRoomMemory() {
   });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   Memory.roomMemory = ROOM_RECORD;
-
   // 初始化房间的内存属性为 0
   Object.keys(ROLE).forEach(roleKey => {
     ALL_ROOM_LIST.forEach(roomCode => {
