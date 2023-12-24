@@ -1,4 +1,4 @@
-import { MAIN_ROOM, RIGHT_ROOM, SOURCES, SPAWN1 } from "sources/sources";
+import { MAIN_ROOM, SOURCES, SPAWN1 } from "sources/sources";
 import { ROLE, getRoleTotalNum } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
 
@@ -13,7 +13,7 @@ export function logByGameTick(content: string, tick = 3): void {
 }
 export function spawnCreep(): void {
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
-  const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum(RIGHT_ROOM);
+  const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum();
   if (_.sum(_.values(getRoleTotalNum())) === 0) {
     Game.notify("所有的 creep 都寄了，建议上线看看情况", 0);
   }
@@ -171,7 +171,7 @@ export function spawnCreep(): void {
         return acc + cur.store[RESOURCE_ENERGY];
       }, 0) > 3000 &&
       existEnergy === energyCapacity &&
-      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum(RIGHT_ROOM))) <= 30
+      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum())) <= 30
     ) {
       SPAWN1.spawn({
         body: creepConfig[ROLE.builder].body,

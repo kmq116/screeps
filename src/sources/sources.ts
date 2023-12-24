@@ -1,6 +1,13 @@
-export const MAIN_ROOM = "W12S8"; // 主房间
-export const RIGHT_ROOM = null; // 右房间
-export const ALL_ROOM_LIST = [MAIN_ROOM, RIGHT_ROOM].filter(Boolean) as string[];
+// 全部的 spawns
+const myAllSpawns = Object.values(Game.spawns);
+// 用第一个 spawn 作 主房间
+const myMainSpawn = myAllSpawns[0];
+// 所有房间的 name
+const myRooms = myAllSpawns.map(spawn => spawn.room.name);
+console.log(myRooms);
+
+export const MAIN_ROOM = myMainSpawn.room.name; // 主房间
+export const ALL_ROOM_LIST = myRooms;
 // export
 export const SOURCES = (() => {
   const sourceInRoom = Game.rooms[MAIN_ROOM]?.find(FIND_SOURCES);

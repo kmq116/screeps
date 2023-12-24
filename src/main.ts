@@ -1,4 +1,4 @@
-import { ALL_ROOM_LIST, MAIN_ROOM, RIGHT_ROOM, SOURCES } from "sources/sources";
+import { ALL_ROOM_LIST } from "sources/sources";
 import { ROLE, generatePixel } from "role/utils";
 import { ErrorMapper } from "utils/ErrorMapper";
 import { averageSourceId } from "sources/utils";

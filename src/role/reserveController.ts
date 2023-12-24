@@ -1,5 +1,3 @@
-import { RIGHT_ROOM } from "sources/sources";
-
 export const reserveController = (
   sourceId?: string
 ): {
