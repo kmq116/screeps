@@ -1,4 +1,3 @@
-import { ROLE } from "role/utils";
 import { creepConfigs } from "role/creepConfig";
 
 export default class CreepExtension extends Creep {

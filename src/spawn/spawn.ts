@@ -21,39 +21,6 @@ export function spawnCreep(): void {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
 
-  if (harvester < 2) {
-    console.log("刚需 harvester 小于 2 了");
-    const sourceId = SOURCES[0]?.id;
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.harvester].minBody,
-      name: getCreepName(ROLE.harvester),
-      opt: {
-        memory: {
-          role: ROLE.harvester,
-          room: MAIN_ROOM,
-          working: false,
-          sourceId
-        }
-      }
-    });
-    return;
-  }
-  if (carrier < 1) {
-    console.log("刚需 carrier 小于 1 了");
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.carrier].minBody,
-      name: getCreepName(ROLE.carrier),
-      opt: {
-        memory: {
-          role: ROLE.carrier,
-          room: MAIN_ROOM,
-          working: false
-        }
-      }
-    });
-    return;
-  }
-
   if (harvester < creepConfig[ROLE.harvester].max) {
     logByGameTick(`harvester: ${harvester}`);
     const sourceId = SOURCES[0]?.id;

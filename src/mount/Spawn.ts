@@ -28,6 +28,9 @@ export class SpawnExtension extends StructureSpawn {
     console.log("能量上限", energyCapacity);
 
     if (spawnResult === ERR_NOT_ENOUGH_ENERGY && needMinBody.includes(options.opt.memory.role)) {
+      console.log(options.opt.memory.role, "孵化角色");
+      console.log(needMinBody, "孵化角色");
+
       const result = this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
         memory: {
           role: options.opt.memory.role,

@@ -1,3 +1,7 @@
+import { carrier } from "./carrier";
+import { creepConfig } from "./roleConfig";
+import { ROLE, getRoleTotalNum } from "./utils";
+
 export const harvester = (
   sourceId?: string
 ): {
@@ -5,6 +9,13 @@ export const harvester = (
   source(creep: Creep): void;
 } => ({
   target(creep: Creep) {
+    // 先判断房间内的收集者有没有达到上限，没达到上限说明是低级房间，就先进行搬运者的逻辑
+    const { harvester: harvesterNum } = getRoleTotalNum();
+    if (harvesterNum < creepConfig[ROLE.harvester].max) {
+      console.log("harvesterNum < creepConfig[ROLE.harvester].max exec carrier()");
+      carrier().target(creep);
+      return;
+    }
     // 优先建造 container
     const siteTargets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 5, {
       filter: structure => {
@@ -14,10 +25,11 @@ export const harvester = (
     const container = creep.pos.findInRange(FIND_STRUCTURES, 10, {
       filter: s => s.structureType === STRUCTURE_CONTAINER
     });
-
+    // 如果有工地，就去工地建造
     if (siteTargets.length) {
       creep.say("🚧 build");
       creep.creepBuild(siteTargets[0]);
+      // 如果有容器，就去尝试修复耐久度，没有耐久度就修，有就把身上的能量都搬运到容器中
     } else if (container.length) {
       if (container[0].hits < container[0].hitsMax) {
         creep.creepRepair(container[0]);

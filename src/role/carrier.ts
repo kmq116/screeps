@@ -1,6 +1,4 @@
-export const carrier = (
-  sourceId?: string
-): {
+export const carrier = (): {
   target(creep: Creep): void;
   source(creep: Creep): void;
 } => ({

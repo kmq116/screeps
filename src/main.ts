@@ -57,6 +57,7 @@ declare global {
     creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface RoomMemory {}
 
   interface Structure {
