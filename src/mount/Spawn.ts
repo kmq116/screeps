@@ -17,8 +17,8 @@ export class SpawnExtension extends StructureSpawn {
   }): number | undefined {
     if (this.spawning) {
       console.log(this.spawning, "正在孵化中 spawning");
-
-      // return;
+      console.log(this.spawning.name, "正在孵化中的 screeps，不继续执行逻辑");
+      return;
     }
     const testIfCanSpawn = this.spawnCreep(options.body, options.name, {
       ...options.opt,
@@ -34,20 +34,25 @@ export class SpawnExtension extends StructureSpawn {
       const spawnResult = this.spawnCreep(options.body, options.name, options.opt);
       console.log("孵化结果", spawnResult);
     } else if (needMinBody.includes(options.opt.memory.role)) {
+      const testMinBodyIfCanSpawn = this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
+        ...options.opt,
+        dryRun: true
+      });
       console.log(options.opt.memory.role, "孵化角色");
       console.log(needMinBody, "孵化角色");
-
-      const result = this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
-        memory: {
-          role: options.opt.memory.role,
-          room: options.opt.memory.room,
-          working: false,
-          sourceId: options.opt.memory.sourceId
-        }
-      });
-      console.log("太大的孵化不出，尝试小一点孵化", result);
-
-      return result;
+      console.log(creepConfig[options.opt.memory.role].minBody, "身体部件参数");
+      if (testMinBodyIfCanSpawn === OK) {
+        this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
+          memory: {
+            role: options.opt.memory.role,
+            room: options.opt.memory.room,
+            working: false,
+            sourceId: options.opt.memory.sourceId
+          }
+        });
+      }
+      console.log("太大的孵化不出，尝试小一点孵化", testMinBodyIfCanSpawn);
+      return testMinBodyIfCanSpawn;
     }
     return testIfCanSpawn;
   }
