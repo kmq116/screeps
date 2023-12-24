@@ -1,6 +1,10 @@
 import { creepConfigs } from "role/creepConfig";
+import { findSpawns } from "role/utils";
 
 export default class CreepExtension extends Creep {
+  public _findSpawns(): AnyStructure[] {
+    return findSpawns(this);
+  }
   /**
    * 能量是否拿满了
    */

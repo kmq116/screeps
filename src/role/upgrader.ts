@@ -1,5 +1,4 @@
-import { MAIN_ROOM, SOURCES } from "sources/sources";
-import { ROLE, findContainers, findStorages } from "./utils";
+import { findContainers, findSpawns, findStorages } from "./utils";
 
 export const upgrader = (
   sourceId?: string
@@ -13,15 +12,11 @@ export const upgrader = (
     }
   },
   source(creep: Creep) {
-    // 如果所有资源都被补满了，就直接从扩展容器里取能量
-    // if (existEnergy === energyCapacity) {
-    //   const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    //     filter: structure => structure.structureType === STRUCTURE_EXTENSION
-    //   });
-    //   if (extension) creep.creepWithdraw(extension, RESOURCE_ENERGY);
-    // } else {
     const storages = findStorages(creep);
-    if (storages[0]) creep.creepWithdraw(storages[0], RESOURCE_ENERGY);
+    const spawn = creep._findSpawns();
+    if (spawn[0]) {
+      creep.creepWithdraw(spawn[0], RESOURCE_ENERGY);
+    } else if (storages[0]) creep.creepWithdraw(storages[0], RESOURCE_ENERGY);
     else {
       const container = findContainers(creep);
       if (container[0]) creep.creepWithdraw(container[0], RESOURCE_ENERGY);

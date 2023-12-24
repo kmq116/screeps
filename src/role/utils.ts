@@ -38,5 +38,11 @@ export const findContainers = (creep: Creep) => {
   });
 };
 
+export const findSpawns = (creep: Creep) => {
+  return creep.room.find(FIND_STRUCTURES, {
+    filter: structure => structure.structureType === STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 0
+  });
+};
+
 const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
 const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;

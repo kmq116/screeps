@@ -55,6 +55,7 @@ declare global {
     creepTransfer(target: AnyCreep | Structure<StructureConstant>, resource: ResourceConstant): void;
     creepRepair(target: Structure<StructureConstant>): void;
     creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void;
+    _findSpawns(): AnyStructure[];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -75,7 +76,7 @@ declare global {
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  console.log("版本号 v4");
+  console.log("版本号 v8");
   mountWork();
   generatePixel();
   creepWork();

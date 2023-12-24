@@ -20,14 +20,20 @@ export class SpawnExtension extends StructureSpawn {
 
       // return;
     }
-    const spawnResult = this.spawnCreep(options.body, options.name, options.opt);
-    console.log("孵化结果", spawnResult);
+    const testIfCanSpawn = this.spawnCreep(options.body, options.name, {
+      ...options.opt,
+      dryRun: true
+    });
+
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
     console.log("已有能量", existEnergy);
     console.log("能量上限", energyCapacity);
-
-    if (spawnResult === ERR_NOT_ENOUGH_ENERGY && needMinBody.includes(options.opt.memory.role)) {
+    console.log("ifCanSpawn", testIfCanSpawn);
+    if (testIfCanSpawn === OK) {
+      const spawnResult = this.spawnCreep(options.body, options.name, options.opt);
+      console.log("孵化结果", spawnResult);
+    } else if (needMinBody.includes(options.opt.memory.role)) {
       console.log(options.opt.memory.role, "孵化角色");
       console.log(needMinBody, "孵化角色");
 
@@ -43,6 +49,6 @@ export class SpawnExtension extends StructureSpawn {
 
       return result;
     }
-    return spawnResult;
+    return testIfCanSpawn;
   }
 }
