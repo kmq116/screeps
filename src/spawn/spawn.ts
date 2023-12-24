@@ -20,21 +20,6 @@ export function spawnCreep(): void {
   const containers = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
     filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
   });
-  if (carrier < 1) {
-    console.log("刚需 carrier 小于 1 了");
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.carrier].minBody,
-      name: getCreepName(ROLE.carrier),
-      opt: {
-        memory: {
-          role: ROLE.carrier,
-          room: MAIN_ROOM,
-          working: false
-        }
-      }
-    });
-    return;
-  }
 
   if (harvester < 2) {
     console.log("刚需 harvester 小于 2 了");
@@ -48,6 +33,21 @@ export function spawnCreep(): void {
           room: MAIN_ROOM,
           working: false,
           sourceId
+        }
+      }
+    });
+    return;
+  }
+  if (carrier < 1) {
+    console.log("刚需 carrier 小于 1 了");
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.carrier].minBody,
+      name: getCreepName(ROLE.carrier),
+      opt: {
+        memory: {
+          role: ROLE.carrier,
+          room: MAIN_ROOM,
+          working: false
         }
       }
     });
