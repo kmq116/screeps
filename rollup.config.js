@@ -5,6 +5,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import screeps from "rollup-plugin-screeps";
+import copy from "rollup-plugin-copy";
 
 let cfg;
 const dest = process.env.DEST;
@@ -26,6 +27,22 @@ export default {
     clear({ targets: ["dist"] }),
     resolve({ rootDir: "src" }),
     commonjs(),
+    copy({
+      targets: [
+        {
+          src: "dist/main.js",
+          dest: cfg.copyPath
+        },
+        {
+          src: "dist/main.js.map",
+          dest: cfg.copyPath,
+          rename: name => name + ".map.js",
+          transform: contents => `module.exports = ${contents.toString()};`
+        }
+      ],
+      hook: "writeBundle",
+      verbose: true
+    }),
     typescript({ tsconfig: "./tsconfig.json" }),
     screeps({ config: cfg, dryRun: cfg == null })
   ]

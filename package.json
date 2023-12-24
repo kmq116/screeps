@@ -17,6 +17,7 @@
     "test-integration": "echo 'See docs/in-depth/testing.md for instructions on enabling integration tests'",
     "watch-main": "rollup -cw --environment DEST:main",
     "watch-pserver": "rollup -cw --environment DEST:pserver",
+    "watch-local": "rollup -cw --environment DEST:local",
     "watch-season": "rollup -cw --environment DEST:season",
     "watch-sim": "rollup -cw --environment DEST:sim"
   },
@@ -67,6 +68,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "rollup-plugin-copy": "^3.5.0",
     "source-map": "~0.6.1"
   }
 }
