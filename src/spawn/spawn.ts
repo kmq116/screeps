@@ -1,4 +1,4 @@
-import { MAIN_ROOM, SOURCES, SPAWN1 } from "sources/sources";
+import { MAIN_ROOM, SOURCES } from "sources/sources";
 import { ROLE, getRoleTotalNum } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
 
@@ -12,6 +12,7 @@ export function logByGameTick(content: string, tick = 3): void {
   }
 }
 export function spawnCreep(): void {
+  const SPAWN1 = Object.values(Game.spawns)[0];
   const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
   const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum();
   if (_.sum(_.values(getRoleTotalNum())) === 0) {
