@@ -18,5 +18,3 @@ export const SOURCES = (() => {
     return [];
   }
 })();
-
-export const SPAWN1 = Game.spawns.Spawn1;

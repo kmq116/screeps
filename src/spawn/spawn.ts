@@ -25,7 +25,6 @@ export function spawnCreep(): void {
   if (harvester < creepConfig[ROLE.harvester].max) {
     logByGameTick(`harvester: ${harvester}`);
     const sourceId = SOURCES[0]?.id;
-    // SPAWN1.spawn
     SPAWN1.spawn({
       body: creepConfig[ROLE.harvester].body,
       name: getCreepName(ROLE.harvester),
@@ -53,6 +52,19 @@ export function spawnCreep(): void {
         }
       }
     });
+  } else if (builder < creepConfig[ROLE.builder].max) {
+    logByGameTick(`builder: ${builder}`);
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.builder].body,
+      name: getCreepName(ROLE.builder),
+      opt: {
+        memory: {
+          role: ROLE.builder,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
+    });
   } else if (upgrader < creepConfig[ROLE.upgrader].max) {
     logByGameTick(`upgrader: ${upgrader}`);
 
@@ -62,19 +74,6 @@ export function spawnCreep(): void {
       opt: {
         memory: {
           role: ROLE.upgrader,
-          room: MAIN_ROOM,
-          working: false
-        }
-      }
-    });
-  } else if (builder < creepConfig[ROLE.builder].max) {
-    logByGameTick(`builder: ${builder}`);
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.builder].body,
-      name: getCreepName(ROLE.builder),
-      opt: {
-        memory: {
-          role: ROLE.builder,
           room: MAIN_ROOM,
           working: false
         }

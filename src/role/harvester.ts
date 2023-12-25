@@ -1,7 +1,3 @@
-import { carrier } from "./carrier";
-import { creepConfig } from "./roleConfig";
-import { ROLE, getRoleTotalNum } from "./utils";
-
 export const harvester = (
   sourceId?: string
 ): {
@@ -10,12 +6,6 @@ export const harvester = (
 } => ({
   target(creep: Creep) {
     // 先判断房间内的收集者有没有达到上限，没达到上限说明是低级房间，就先进行搬运者的逻辑
-    const { harvester: harvesterNum } = getRoleTotalNum();
-    if (harvesterNum < creepConfig[ROLE.harvester].max) {
-      console.log("harvesterNum < creepConfig[ROLE.harvester].max exec carrier()");
-      carrier().target(creep);
-      return;
-    }
     // 优先建造 container
     const siteTargets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 5, {
       filter: structure => {

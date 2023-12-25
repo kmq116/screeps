@@ -31,7 +31,9 @@ export const builder = (
       if (source) creep.creepWithdraw(source, RESOURCE_ENERGY);
     } else {
       const target = creep.room.find(FIND_STRUCTURES, {
-        filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+        filter: structure =>
+          (STRUCTURE_CONTAINER === structure.structureType || structure.structureType === STRUCTURE_SPAWN) &&
+          structure.store[RESOURCE_ENERGY] > 0
       })[0];
       if (target) creep.creepWithdraw(target, RESOURCE_ENERGY);
     }

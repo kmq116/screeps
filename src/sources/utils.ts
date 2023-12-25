@@ -1,4 +1,4 @@
-import { MAIN_ROOM, SOURCES } from "./sources";
+import { SOURCES } from "./sources";
 import { ROLE } from "role/utils";
 
 /**
@@ -16,30 +16,6 @@ function averageHarvesterSourceId() {
   });
 }
 
-function averageCarrierSourceId(): void {
-  const targets: StructureContainer[] = Game.rooms[MAIN_ROOM].find<StructureContainer>(FIND_STRUCTURES, {
-    filter: i => i.structureType === STRUCTURE_CONTAINER && i.store[RESOURCE_ENERGY] > 0
-  });
-  console.log(targets, "===============");
-
-  const sourceId = targets.length > 1 ? targets[1]?.id : targets[0]?.id;
-  const list = _.filter(Game.creeps, creep => creep.memory.role === ROLE.carrier);
-  const list1 = _.filter(Game.creeps, creep => creep.memory.role === ROLE.builder);
-  list.forEach((creep, index) => {
-    if (index > list.length / 2 - 1) {
-      creep.memory.sourceId = sourceId;
-    } else {
-      creep.memory.sourceId = targets[0]?.id;
-    }
-  });
-  list1.forEach((creep, index) => {
-    if (index > list.length / 2 - 1) {
-      creep.memory.sourceId = sourceId;
-    } else {
-      creep.memory.sourceId = targets[0]?.id;
-    }
-  });
-}
 export function averageSourceId(): void {
   averageHarvesterSourceId();
 }
