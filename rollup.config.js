@@ -14,7 +14,7 @@ if (!dest) {
 } else if ((cfg = require("./screeps.json")[dest]) == null) {
   throw new Error("Invalid upload destination");
 }
-
+const myCopy = cfg.copyPath? copy :()=>{}
 export default {
   input: "src/main.ts",
   output: {
@@ -27,7 +27,7 @@ export default {
     clear({ targets: ["dist"] }),
     resolve({ rootDir: "src" }),
     commonjs(),
-    copy({
+    myCopy({
       targets: [
         {
           src: "dist/main.js",
