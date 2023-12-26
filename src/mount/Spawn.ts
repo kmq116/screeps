@@ -1,6 +1,5 @@
 import { ROLE } from "role/utils";
 import { creepConfig } from "role/roleConfig";
-const needMinBody = [ROLE.harvester, ROLE.carrier, ROLE.upgrader, ROLE.builder];
 export class SpawnExtension extends StructureSpawn {
   public spawn(options: {
     body: BodyPartConstant[];
@@ -22,13 +21,12 @@ export class SpawnExtension extends StructureSpawn {
     if (testIfCanSpawn === OK) {
       const spawnResult = this.spawnCreep(options.body, options.name, options.opt);
       console.log("孵化结果", spawnResult);
-    } else if (needMinBody.includes(options.opt.memory.role)) {
+    } else {
       const testMinBodyIfCanSpawn = this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {
         ...options.opt,
         dryRun: true
       });
       console.log(options.opt.memory.role, "孵化角色");
-      console.log(needMinBody, "孵化角色");
       console.log(creepConfig[options.opt.memory.role].minBody, "身体部件参数");
       if (testMinBodyIfCanSpawn === OK) {
         this.spawnCreep(creepConfig[options.opt.memory.role].minBody, options.name, {

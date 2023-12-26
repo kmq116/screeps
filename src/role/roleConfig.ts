@@ -34,7 +34,7 @@ export const creepConfig: Record<
   [ROLE.carrier]: {
     body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
     minBody: minBodyCarrier,
-    max: 1
+    max: 2
   },
   [ROLE.explorerHarvester]: {
     body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],

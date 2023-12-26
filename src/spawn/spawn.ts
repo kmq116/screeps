@@ -92,54 +92,53 @@ export function spawnCreep(): void {
         }
       }
     });
-  } else if (explorerHarvester < creepConfig[ROLE.explorerHarvester].max) {
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.explorerHarvester].body,
-      name: getCreepName(ROLE.explorerHarvester),
-      opt: {
-        memory: {
-          role: ROLE.explorerHarvester,
-          room: "W5S2",
-          working: false
-        }
-      }
-    });
-  } else if (explorerCarrier < creepConfig[ROLE.explorerCarrier].max) {
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.explorerCarrier].body,
-      name: getCreepName(ROLE.explorerCarrier),
-      opt: {
-        memory: {
-          role: ROLE.explorerCarrier,
-          room: "W5S2",
-          working: false
-        }
-      }
-    });
-  } else if (reserveController < creepConfig[ROLE.reserveController].max) {
-    SPAWN1.spawn({
-      body: creepConfig[ROLE.reserveController].body,
-      name: getCreepName(ROLE.reserveController),
-      opt: {
-        memory: {
-          role: ROLE.reserveController,
-          room: "W5S2",
-          working: false,
-          sourceId: "5bbcac9a9099fc012e635d27"
-        }
-      }
-    });
-  } else {
+  }
+  // else if (explorerHarvester < creepConfig[ROLE.explorerHarvester].max) {
+  //   SPAWN1.spawn({
+  //     body: creepConfig[ROLE.explorerHarvester].body,
+  //     name: getCreepName(ROLE.explorerHarvester),
+  //     opt: {
+  //       memory: {
+  //         role: ROLE.explorerHarvester,
+  //         room: MAIN_ROOM,
+  //         working: false
+  //       }
+  //     }
+  //   });
+  // }
+  // else if (explorerCarrier < creepConfig[ROLE.explorerCarrier].max) {
+  //   SPAWN1.spawn({
+  //     body: creepConfig[ROLE.explorerCarrier].body,
+  //     name: getCreepName(ROLE.explorerCarrier),
+  //     opt: {
+  //       memory: {
+  //         role: ROLE.explorerCarrier,
+  //         room: "W5S2",
+  //         working: false
+  //       }
+  //     }
+  //   });
+  // }
+  // else if (reserveController < creepConfig[ROLE.reserveController].max) {
+  //   SPAWN1.spawn({
+  //     body: creepConfig[ROLE.reserveController].body,
+  //     name: getCreepName(ROLE.reserveController),
+  //     opt: {
+  //       memory: {
+  //         role: ROLE.reserveController,
+  //         room: "W5S2",
+  //         working: false,
+  //         sourceId: "5bbcac9a9099fc012e635d27"
+  //       }
+  //     }
+  //   });
+  // }
+  else {
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
-
-    if (
-      containers.reduce((acc, cur) => {
-        return acc + cur.store[RESOURCE_ENERGY];
-      }, 0) > 3000 &&
-      existEnergy === energyCapacity &&
-      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum())) <= 30
-    ) {
+    console.log(existEnergy, energyCapacity);
+    // 能量满了，就创建升级的爬虫
+    if (existEnergy === energyCapacity) {
       SPAWN1.spawn({
         body: creepConfig[ROLE.builder].body,
         name: getCreepName(ROLE.builder),
