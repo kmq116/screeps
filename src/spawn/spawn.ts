@@ -137,8 +137,14 @@ export function spawnCreep(): void {
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
     console.log(existEnergy, energyCapacity);
-    // 能量满了，就创建升级的爬虫
-    if (existEnergy === energyCapacity) {
+    if (
+      containers.reduce((acc, cur) => {
+        return acc + cur.store[RESOURCE_ENERGY];
+      }, 0) > 3000 &&
+      existEnergy === energyCapacity &&
+      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum())) <= 30
+    ) {
+      // 能量满了，就创建升级的爬虫
       SPAWN1.spawn({
         body: creepConfig[ROLE.builder].body,
         name: getCreepName(ROLE.builder),
