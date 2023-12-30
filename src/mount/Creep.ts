@@ -17,7 +17,7 @@ export default class CreepExtension extends Creep {
    * @returns {boolean}
    */
   public shouldGetEnergy(): boolean {
-    return this.store.getFreeCapacity() >= 0 && this.memory.working === false;
+    return this.store.getFreeCapacity() >= 0 && !this.memory.working;
   }
 
   /**
@@ -71,7 +71,7 @@ export default class CreepExtension extends Creep {
     if (this.shouldGetEnergy()) {
       if (this.isEnergyFull()) this.switchState();
       config.source(this);
-    } else if (this.memory.working === true) {
+    } else if (this.memory.working) {
       if (this.isEnergyEmpty()) this.switchState();
       config.target(this);
     }

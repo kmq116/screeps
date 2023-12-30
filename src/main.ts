@@ -21,7 +21,11 @@ declare global {
     log: any;
     watch: Partial<Record<"expressions" | "values", any>>;
     roomMemory: Record<string, { creepRoleCounts: Record<ROLE, number> }>;
+
+    creepConfigs: any;
   }
+
+  interface creepApi {}
 
   interface CreepMemory {
     readonly role: ROLE;
