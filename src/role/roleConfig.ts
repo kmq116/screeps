@@ -1,6 +1,7 @@
 import { ROLE } from "./utils";
 
 const minBodyHasWork = [WORK, CARRY, MOVE] as BodyPartConstant[];
+const minBodyAttack = [ATTACK, MOVE] as BodyPartConstant[];
 const minBodyHasClaim = [CLAIM, CARRY, MOVE] as BodyPartConstant[];
 const minBodyCarrier = [CARRY, MOVE, CARRY, MOVE] as BodyPartConstant[];
 export const creepConfig: Record<
@@ -17,12 +18,12 @@ export const creepConfig: Record<
     max: 2
   },
   [ROLE.upgrader]: {
-    body: [WORK, WORK, WORK, CARRY, CARRY, MOVE],
+    body: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE],
     minBody: minBodyHasWork,
     max: 1
   },
   [ROLE.builder]: {
-    body: [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE],
+    body: [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
     minBody: minBodyHasWork,
     max: 1
   },
@@ -50,5 +51,10 @@ export const creepConfig: Record<
     body: [CARRY, CLAIM, MOVE],
     minBody: minBodyHasClaim,
     max: 1
+  },
+  [ROLE.attacker]: {
+    body: [RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE],
+    minBody: minBodyAttack,
+    max: 0
   }
 };

@@ -2,7 +2,7 @@ export class TowerExtension extends StructureTower {
   public work(): void {
     const target = this.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
       filter(c) {
-        return c.getActiveBodyparts(ATTACK) === 0 || c.owner.username === "Invader";
+        return c.getActiveBodyparts(ATTACK) === 0 || ["Source Keeper", "Invader"].includes(c.owner.username);
       }
     });
     if (target) this.attack(target);

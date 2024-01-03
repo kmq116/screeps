@@ -11,7 +11,8 @@ export enum ROLE {
   carrier = "carrier",
   explorerHarvester = "explorerHarvester",
   explorerCarrier = "explorerCarrier",
-  reserveController = "reserveController"
+  reserveController = "reserveController",
+  attacker = "attacker"
 }
 
 /**

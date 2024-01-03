@@ -39,7 +39,7 @@ export const carrier = (): {
     }
     const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: s => {
-        return s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 50;
+        return s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 1500;
       }
     });
     if (container) {
@@ -53,6 +53,7 @@ export const carrier = (): {
     });
     if (storage) {
       creep.creepWithdraw(storage, RESOURCE_ENERGY);
+      return;
     }
   }
 });

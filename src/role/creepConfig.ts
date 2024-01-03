@@ -7,6 +7,7 @@ import { harvester } from "./harvester";
 import { repairer } from "./repaired";
 import { reserveController } from "./reserveController";
 import { upgrader } from "./upgrader";
+import { attacker } from "./attacker";
 
 export const creepConfigs: Record<
   ROLE,
@@ -22,5 +23,6 @@ export const creepConfigs: Record<
   upgrader,
   explorerHarvester,
   explorerCarrier,
-  reserveController
+  reserveController,
+  attacker
 };

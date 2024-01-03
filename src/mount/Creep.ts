@@ -1,5 +1,5 @@
 import { creepConfigs } from "role/creepConfig";
-import { findSpawns } from "role/utils";
+import { ROLE, findSpawns } from "role/utils";
 
 export default class CreepExtension extends Creep {
   public _findSpawns(): AnyStructure[] {
@@ -79,5 +79,34 @@ export default class CreepExtension extends Creep {
 
   public switchState(): void {
     this.memory.working = !this.memory.working;
+  }
+
+  public goRoom(): void {
+    const waitedAttackRoom = "W12S3";
+    if (this.room.name !== waitedAttackRoom) {
+      console.log("不等于要进攻的房间");
+      // 丢弃身上所有资源
+      // for (const resourceType in this.carry) {
+      //   this.drop(resourceType as any);
+      // }
+      this.moveTo(new RoomPosition(11, 25, waitedAttackRoom));
+    } else {
+      const target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+      console.log("找到了不属于我的 creep,干他");
+      if (target) {
+        if (this.attack(target) === ERR_NOT_IN_RANGE) {
+          console.log("近战攻击");
+          this.moveTo(target);
+        }
+        if (this.rangedAttack(target) === ERR_NOT_IN_RANGE) {
+          console.log("尝试远程攻击");
+          this.moveTo(target);
+        }
+      }
+    }
+  }
+
+  public attackRoom(): void {
+    this.goRoom();
   }
 }

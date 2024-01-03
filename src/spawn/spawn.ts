@@ -1,6 +1,7 @@
 import { MAIN_ROOM, SOURCES } from "sources/sources";
 import { ROLE, getRoleTotalNum } from "role/utils";
 import { creepConfig } from "../role/roleConfig";
+import { creepConfigs } from "../role/creepConfig";
 
 function getCreepName(role: ROLE): string {
   return `${role}-${Game.time}`;
@@ -13,7 +14,8 @@ export function logByGameTick(content: string, tick = 3): void {
 }
 export function spawnCreep(): void {
   const SPAWN1 = Object.values(Game.spawns)[0];
-  const { harvester, upgrader, builder, repairer, carrier } = getRoleTotalNum();
+  const { harvester, upgrader, builder, repairer, carrier, attacker } = getRoleTotalNum();
+  console.log(JSON.stringify({ harvester, upgrader, builder, repairer, carrier, attacker }));
   const { explorerHarvester, explorerCarrier, reserveController } = getRoleTotalNum();
   if (_.sum(_.values(getRoleTotalNum())) === 0) {
     Game.notify("所有的 creep 都寄了，建议上线看看情况", 0);
@@ -92,6 +94,19 @@ export function spawnCreep(): void {
         }
       }
     });
+  } else if (attacker < creepConfig[ROLE.attacker].max) {
+    logByGameTick(`attacker: ${repairer}`);
+    SPAWN1.spawn({
+      body: creepConfig[ROLE.attacker].body,
+      name: getCreepName(ROLE.attacker),
+      opt: {
+        memory: {
+          role: ROLE.attacker,
+          room: MAIN_ROOM,
+          working: false
+        }
+      }
+    });
   }
   // else if (explorerHarvester < creepConfig[ROLE.explorerHarvester].max) {
   //   SPAWN1.spawn({
@@ -137,12 +152,13 @@ export function spawnCreep(): void {
     const existEnergy = Game.rooms[MAIN_ROOM].energyAvailable;
     const energyCapacity = Game.rooms[MAIN_ROOM].energyCapacityAvailable;
     console.log(existEnergy, energyCapacity);
+    console.log("storage energy", Game.rooms[MAIN_ROOM].storage?.store?.energy);
+    const Storage = Game.rooms[MAIN_ROOM].storage;
     if (
       containers.reduce((acc, cur) => {
         return acc + cur.store[RESOURCE_ENERGY];
-      }, 0) > 3000 &&
-      existEnergy === energyCapacity &&
-      _.sum(_.values(getRoleTotalNum())) + _.sum(_.values(getRoleTotalNum())) <= 30
+      }, 0) > 3000 ||
+      (existEnergy === energyCapacity && Storage && Storage?.store?.energy > 1e5)
     ) {
       // 能量满了，就创建升级的爬虫
       SPAWN1.spawn({
