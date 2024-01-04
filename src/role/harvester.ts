@@ -55,7 +55,7 @@ export const harvester = (
       console.log("没有找到指定的 source");
       return;
     }
-    // creep.say("🔄 harvest");
+    creep.say("☄️ harvest");
 
     creep.creepHarvest(source);
     // 在能量附近 检查有没有 container 工地

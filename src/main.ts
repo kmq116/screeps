@@ -25,7 +25,7 @@ declare global {
     creepConfigs: any;
   }
 
-  interface creepApi {}
+  // interface creepApi {}
 
   interface CreepMemory {
     readonly role: ROLE;
@@ -60,6 +60,7 @@ declare global {
     creepRepair(target: Structure<StructureConstant>): void;
     creepHarvest(target: Source | Mineral<MineralConstant> | Deposit): void;
     _findSpawns(): AnyStructure[];
+    attackRoom(): any;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -1,4 +1,4 @@
-import { creepConfigs } from "role/creepConfig";
+import { CreepRoleConfigs } from "role/creepLogicConfig";
 import { ROLE, findSpawns } from "role/utils";
 
 export default class CreepExtension extends Creep {
@@ -61,7 +61,7 @@ export default class CreepExtension extends Creep {
   }
 
   public work(): void {
-    const creepConfig = creepConfigs[this.memory.role];
+    const creepConfig = CreepRoleConfigs[this.memory.role];
     if (!creepConfig) {
       console.log("找不到角色配置，可能还未发布", this.memory.role);
       return;
@@ -82,7 +82,8 @@ export default class CreepExtension extends Creep {
   }
 
   public goRoom(): void {
-    const waitedAttackRoom = "W12S3";
+    const waitedAttackRoom = "W12S4";
+    console.log("要进攻的房间", waitedAttackRoom);
     if (this.room.name !== waitedAttackRoom) {
       console.log("不等于要进攻的房间");
       // 丢弃身上所有资源

@@ -9,7 +9,7 @@ import { reserveController } from "./reserveController";
 import { upgrader } from "./upgrader";
 import { attacker } from "./attacker";
 
-export const creepConfigs: Record<
+export const CreepRoleConfigs: Record<
   ROLE,
   (sourceId?: string) => {
     target(creep: Creep): void;

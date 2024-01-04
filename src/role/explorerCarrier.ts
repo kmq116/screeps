@@ -1,8 +1,4 @@
-import { log } from "console";
 import { MAIN_ROOM } from "sources/sources";
-import { carrier } from "./carrier";
-import { creepConfigs } from "./creepConfig";
-import { ROLE } from "./utils";
 
 export const explorerCarrier = (
   sourceId?: string

@@ -55,6 +55,6 @@ export const creepConfig: Record<
   [ROLE.attacker]: {
     body: [RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE],
     minBody: minBodyAttack,
-    max: 0
+    max: 1
   }
 };
