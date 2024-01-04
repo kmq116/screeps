@@ -1,4 +1,14 @@
-# Screeps Typescript Starter
+# screeps 游戏自动化种田脚本
+
+基于 Screeps Typescript Starter 这个模板创建了项目
+
+编写了 screeps 游戏中的自动化种田逻辑，和基本的攻击代码
+
+具体逻辑如下：
+1. 进入房间，自动生成 harvester 去能量矿的地方进行采矿，并在脚下建造 container
+2. 等待建造好 container 之后，去生成其他角色的爬爬
+
+以下是原 README.md
 
 Screeps Typescript Starter is a starting point for a Screeps AI written in Typescript. It provides everything you need to start writing your AI whilst leaving `main.ts` as empty as possible.
 
